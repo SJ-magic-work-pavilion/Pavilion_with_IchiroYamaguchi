@@ -8,21 +8,33 @@
 
 /******************************
 ******************************/
-ofApp::ofApp(int _soundStream_DeviceId)
+ofApp::ofApp(int _soundStream_DeviceId, int _BootMode, int _DesignCategory, int _BlockGrouping_id)
 : soundStream_DeviceId(_soundStream_DeviceId)
 , b_Reset_VolumeInput(true)
 , b_Refresh_VolumeData(true)
 , DesignManager(DESIGN_MANAGER::getInstance())
-, gui_LedId_max(20)
+, gui_LedId_max(30)
 , gui_LedId_min(-1)
 , b__LedTest_ID_UpDown_byKey_DesignLight(true)
+, fp_RecPlay(NULL)
+, b_Rec(false)
 {
+	if(NUM_BOOT_MODE <= _BootMode){
+		printf("> Boot mode:out of Range -> BOOT_MODE__LED_SIMULATION\n");
+		BootMode = BOOT_MODE__LED_SIMULATION;
+	}else{
+		BootMode = BOOT_MODE(_BootMode);
+	}
+	
+	argin_DesignCategory = _DesignCategory;
+	argin_BlockGrouping_id = _BlockGrouping_id;
 }
 
 /******************************
 ******************************/
 ofApp::~ofApp()
 {
+	if(fp_RecPlay) fclose(fp_RecPlay);
 }
 
 /******************************
@@ -31,9 +43,9 @@ void ofApp::exit()
 {
 	/********************
 	********************/
-#ifndef MIC_ONLY
-	DesignManager.exit();
-#endif
+	if(IsEnable_LedManager()){
+		DesignManager.exit();
+	}
 
 	/********************
 	********************/
@@ -67,12 +79,21 @@ void ofApp::setup(){
 	
 	/********************
 	********************/
+	if(IsEnable_PlayReced()){
+		fp_RecPlay = fopen("../../../data/Rec.txt", "r");
+		if(fp_RecPlay == NULL) { ERROR_MSG(); std::exit(1); }
+	}
+	
+	/********************
+	********************/
 	srand((unsigned)time(NULL));
 	
 	/********************
 	********************/
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
+	// ofSetFrameRate(30);
+	
 	ofSetWindowShape(WIDTH, HEIGHT);
 	ofSetEscapeQuitsApp(false);
 	
@@ -94,14 +115,27 @@ void ofApp::setup(){
 	
 	GG_SoundFilter.setup("Sound Filter");
 	GG_SoundFilter.add(LPF_Sound_ThreshSec.setup("LPF Snd Th_Sec", 0.3, 0, 3.0));
+	GG_SoundFilter.add(gui_b_LimitVolDown.setup("b_LimitVolDown", false));
+	GG_SoundFilter.add(gui_LimitVolDown_tan.setup("LimitDown tan", 0.2, 0.05, 0.5));
 	GG_SoundFilter.add(Monitor_v_max.setup("v max", 1.0, 0.1, 2.0));
 	gui.add(&GG_SoundFilter);
 	
+	GG_DirectFilter.setup("Direct Filter");
+	GG_DirectFilter.add(LPF_Direct_NumLeds_ThreshSec.setup("Num Leds", 0, 0, 0.6));
+	GG_DirectFilter.add(LPF_Direct_NumWaves_ThreshSec.setup("Num Waves", 0.3, 0, 0.6));
+	gui.add(&GG_DirectFilter);
+	
 	GG_VolRange.setup("Vol Range");
+	/*
 	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.05, 0.01, 0.5));
 	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.1, 0.01, 0.5));
 	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0, 0, 0.5));
 	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.3, 0, 0.5));
+	*/
+	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.12, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.145, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.12, 0, 0.5));
+	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.37, 0, 0.5));
 	gui.add(&GG_VolRange);
 	
 	/* */
@@ -140,24 +174,29 @@ void ofApp::setup(){
 	
 	/********************
 	********************/
-#ifndef MIC_ONLY
-	DesignManager.setup();
-#endif
+	if(IsEnable_LedManager()){
+		DesignManager.setup();
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 	/********************
 	********************/
+	float Latest_RawVal;
+	
 	Thread_Verts_SoundLevel.lock();
-	Vbo_SoundLevel.updateVertexData(&Thread_Verts_SoundLevel.get_MonitorVert(0, Monitor_v_max), NUM_POINTS);
-	RawVolumeLevel_of_theMouse_x = Thread_Verts_SoundLevel.get_RawVal(mouseX);
-	
-#ifndef MIC_ONLY
-	DesignManager.update(Thread_Verts_SoundLevel.get_Latest_RawVal(), gui_Vol_thresh_L, gui_Vol_thresh_H, gui_Vol_Map_L, gui_Vol_Map_H);
-#endif
-	
+		Vbo_SoundLevel.updateVertexData(&Thread_Verts_SoundLevel.get_MonitorVert(0, Monitor_v_max), NUM_POINTS);
+		RawVolumeLevel_of_theMouse_x = Thread_Verts_SoundLevel.get_RawVal(mouseX);
+		Latest_RawVal = Thread_Verts_SoundLevel.get_Latest_RawVal();
 	Thread_Verts_SoundLevel.unlock();
+	
+	/********************
+	********************/
+	if(IsEnable_LedManager()){
+		DesignManager.update_GuiParam(LPF_Direct_NumLeds_ThreshSec, LPF_Direct_NumWaves_ThreshSec);
+		DesignManager.update(Latest_RawVal, gui_Vol_thresh_L, gui_Vol_thresh_H, gui_Vol_Map_L, gui_Vol_Map_H);
+	}
 }
 
 /******************************
@@ -250,19 +289,63 @@ void ofApp::draw(){
 	
 	/********************
 	********************/
-#ifndef MIC_ONLY
-	ofColor copy_GuiColor = gui_DesignLight_Color;
-	LED_PARAM sendColor_DesignLight(copy_GuiColor.r, copy_GuiColor.g, copy_GuiColor.b);
-	
-	copy_GuiColor = gui_SafetyLight_Color;
-	LED_PARAM sendColor_SafetyLight(copy_GuiColor.r, copy_GuiColor.g, copy_GuiColor.b);
-	
-	DesignManager.draw(gui_DesignLight_Id, sendColor_DesignLight, gui_SafetyLight_Id, sendColor_SafetyLight);
-#endif
+	if(IsEnable_LedManager()){
+		ofColor copy_GuiColor = gui_DesignLight_Color;
+		LED_PARAM sendColor_DesignLight(copy_GuiColor.r, copy_GuiColor.g, copy_GuiColor.b);
+		
+		copy_GuiColor = gui_SafetyLight_Color;
+		LED_PARAM sendColor_SafetyLight(copy_GuiColor.r, copy_GuiColor.g, copy_GuiColor.b);
+		
+		DesignManager.draw(gui_DesignLight_Id, sendColor_DesignLight, gui_SafetyLight_Id, sendColor_SafetyLight);
+	}
 	
 	/********************
 	********************/
+	if(b_Rec){
+		ofSetColor(255, 0, 0, 100);
+		ofDrawCircle(1230, 40, 15);
+	}
+
+	/********************
+	********************/
 	gui.draw();
+}
+
+/******************************
+******************************/
+void ofApp::Relpace_ch(char* buf, char from, char to)
+{
+	for(int i = 0; buf[i] != '\0'; i++){
+		if(buf[i] == from){
+			buf[i] = to;
+		}
+	}
+}
+
+/******************************
+******************************/
+double ofApp::ReadRecedData_FromFile()
+{
+	if(fp_RecPlay == NULL){
+		ERROR_MSG(); std::exit(1);
+	}
+	
+	char buf[BUF_SIZE];
+	if(fgets(buf, BUF_SIZE, fp_RecPlay) == NULL){
+		rewind(fp_RecPlay);
+		
+		if(fgets(buf, BUF_SIZE, fp_RecPlay) == NULL){
+			ERROR_MSG(); std::exit(1);
+		}
+		printf("> Reced File Loop\n");
+	}
+	
+	Relpace_ch(buf, '\n', '\0');
+	string str_buf = buf;
+	
+	vector<string> str_val = ofSplitString(str_buf,",");
+	
+	return atof(str_val[1].c_str());
 }
 
 /******************************
@@ -271,9 +354,17 @@ void ofApp::audioReceived(float *input, int bufferSize, int nChannels)
 {
 	/********************
 	********************/
+	static float t_LastINT = 0;
+	float now = ofGetElapsedTimef();
+	
+	/********************
+	********************/
 	double v = 0;
 	if(gui_b_VolSimulation){
 		v = gui_Simulation_Volume;
+		
+	}else if(IsEnable_PlayReced()){
+		v = ReadRecedData_FromFile();
 		
 	}else{
 		for(int i = 0; i < bufferSize * nChannels; i++){
@@ -281,6 +372,8 @@ void ofApp::audioReceived(float *input, int bufferSize, int nChannels)
 		}
 		v = sqrt(v / bufferSize);
 	}
+	
+	if(b_Rec) fprintf(fp_RecPlay, "%f,%f\n", now, v);
 	
 	/********************
 	********************/
@@ -294,9 +387,6 @@ void ofApp::audioReceived(float *input, int bufferSize, int nChannels)
 	static int c_INT = 0;
 	static double v_sum = 0;
 	static double Last_v_Sound = 0;
-	
-	static float t_LastINT = 0;
-	float now = ofGetElapsedTimef();
 	
 	switch(state){
 		case STATE_BOOT:
@@ -322,6 +412,7 @@ void ofApp::audioReceived(float *input, int bufferSize, int nChannels)
 				double v_Sound = v;
 				
 				/********************
+				LPF
 				********************/
 				double alpha;
 				
@@ -331,6 +422,17 @@ void ofApp::audioReceived(float *input, int bufferSize, int nChannels)
 					alpha = 1/LPF_Sound_ThreshSec * dt;
 				}
 				v_Sound = alpha * v_Sound + (1 - alpha) * Last_v_Sound;
+				
+				/********************
+				Down limit
+				********************/
+				if(gui_b_LimitVolDown){
+					double DownLimit_v = Last_v_Sound - gui_LimitVolDown_tan * (now - t_LastINT);
+					v_Sound = max(v_Sound, DownLimit_v);
+				}
+				
+				/********************
+				********************/
 				Last_v_Sound = v_Sound;
 				
 				/********************
@@ -382,16 +484,32 @@ void ofApp::keyPressed(int key){
 		}
 			break;
 			
+		case 'c':
+			if(IsEnable_RecMic()){
+				if(fp_RecPlay) fclose(fp_RecPlay);
+				
+				b_Rec = !b_Rec;
+				if(b_Rec){
+					fp_RecPlay = fopen("../../../data/Rec.txt", "w");
+					if(fp_RecPlay == NULL){
+						ERROR_MSG();
+						std::exit(1);
+					}
+				}
+			}
+			
+			break;
+
 		case 'e':
-#ifndef MIC_ONLY
-			DesignManager.Escape_StateChart();
-#endif
+			if(IsEnable_LedManager()){
+				DesignManager.Escape_StateChart();
+			}
 			break;
 			
 		case 'g':
-#ifndef MIC_ONLY
-			DesignManager.Start_StateChart();
-#endif
+			if(IsEnable_LedManager()){
+				DesignManager.Start_StateChart();
+			}
 			break;
 			
 		case 'r':

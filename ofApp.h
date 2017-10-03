@@ -33,7 +33,13 @@ private:
 	
 	ofxGuiGroup GG_SoundFilter;
 	ofxFloatSlider LPF_Sound_ThreshSec; // 大:緩やか
+	ofxToggle gui_b_LimitVolDown;
+	ofxFloatSlider gui_LimitVolDown_tan; // 小:緩やか
 	ofxFloatSlider Monitor_v_max;
+	
+	ofxGuiGroup GG_DirectFilter;
+	ofxFloatSlider LPF_Direct_NumLeds_ThreshSec; // 大:緩やか
+	ofxFloatSlider LPF_Direct_NumWaves_ThreshSec; // 大:緩やか
 	
 	ofxGuiGroup GG_VolRange;
 	ofxFloatSlider gui_Vol_thresh_L;
@@ -52,8 +58,8 @@ private:
 	bool b__LedTest_ID_UpDown_byKey_DesignLight;
 	
 	ofxGuiGroup GG_VolSimulation;
-	ofxFloatSlider	gui_Simulation_Volume;
 	ofxToggle gui_b_VolSimulation;
+	ofxFloatSlider	gui_Simulation_Volume;
 	
 	
 	/********************
@@ -73,8 +79,16 @@ private:
 	********************/
 	DESIGN_MANAGER& DesignManager;
 	
+	/********************
+	********************/
+	FILE* fp_RecPlay;
+	bool b_Rec;
+	
 	/****************************************
 	****************************************/
+	void Relpace_ch(char* buf, char from, char to);
+	double ReadRecedData_FromFile();
+	
 	void draw_VolThresh();
 	void draw_VolMapRange();
 
@@ -82,7 +96,7 @@ private:
 public:
 	/****************************************
 	****************************************/
-	ofApp(int _soundStream_DeviceId);
+	ofApp(int _soundStream_DeviceId, int _BootMode, int _DesignCategory, int _BlockGrouping_id);
 	void audioReceived(float *input, int bufferSize, int nChannels);
 	
 	~ofApp();

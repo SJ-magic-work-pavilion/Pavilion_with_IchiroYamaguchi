@@ -9,7 +9,7 @@
 /************************************************************
 ************************************************************/
 enum{
-	MAX_LOGICAL_CHS = 20,
+	MAX_LOGICAL_CHS = 30,
 };
 
 struct BLOCK{
@@ -18,6 +18,8 @@ struct BLOCK{
 	const BP_PATTERN_ID Bp_Pattern_id;
 	int Progress_id;
 	float t_From;
+	
+	double NumWavesInSpace;
 };
 
 struct BLOCK_GROUP{

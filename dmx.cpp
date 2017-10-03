@@ -14,6 +14,10 @@ public:
 	ODE(const char* _ch_IP)
 	{
 		strcpy(ch_IP, _ch_IP);
+		
+		for(int i = 0; i < SIZE_DMX_UNIVERSE; i++){
+			universe[i] = 0;
+		}
 	}
 	const char* get_IP()
 	{
@@ -36,30 +40,30 @@ static const int NUM_ODES = sizeof(ode) / sizeof(ode[0]);
 ********************/
 LED_LIGHT DesignLight[] = {																										
 //				ODE id		AddressFrom																		Hardware(Start Address) setting 		
-/*	0	*/	LED_LIGHT(	0	,	0	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	1050	,	450	,	0	),	5	),	//	1		
-/*	1	*/	LED_LIGHT(	0	,	3	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	1050	,	435	,	0	),	5	),	//	4		
-/*	2	*/	LED_LIGHT(	0	,	6	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	990	,	450	,	0	),	5	),	//	7		
-/*	3	*/	LED_LIGHT(	0	,	9	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	990	,	435	,	0	),	5	),	//	10		
-/*	4	*/	LED_LIGHT(	0	,	12	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	930	,	450	,	0	),	5	),	//	13		
-/*	5	*/	LED_LIGHT(	0	,	15	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	930	,	435	,	0	),	5	),	//	16		
-/*	6	*/	LED_LIGHT(	0	,	18	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	870	,	450	,	0	),	5	),	//	19		
-/*	7	*/	LED_LIGHT(	0	,	21	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	870	,	435	,	0	),	5	),	//	22		
-/*	8	*/	LED_LIGHT(	0	,	24	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	810	,	450	,	0	),	5	),	//	25		
-/*	9	*/	LED_LIGHT(	0	,	27	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	810	,	435	,	0	),	5	),	//	28		
-/*	10	*/	LED_LIGHT(	0	,	30	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	750	,	450	,	0	),	5	),	//	31		
-/*	11	*/	LED_LIGHT(	0	,	33	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	750	,	435	,	0	),	5	),	//	34		
-/*	12	*/	LED_LIGHT(	0	,	36	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	690	,	450	,	0	),	5	),	//	37		
-/*	13	*/	LED_LIGHT(	0	,	39	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	690	,	435	,	0	),	5	),	//	40		
-/*	14	*/	LED_LIGHT(	0	,	42	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	630	,	450	,	0	),	5	),	//	43		
-/*	15	*/	LED_LIGHT(	0	,	45	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	630	,	435	,	0	),	5	),	//	46		
-/*	16	*/	LED_LIGHT(	0	,	48	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	570	,	450	,	0	),	5	),	//	49		
-/*	17	*/	LED_LIGHT(	0	,	51	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	570	,	435	,	0	),	5	),	//	52		
-/*	18	*/	LED_LIGHT(	0	,	54	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	510	,	450	,	0	),	5	),	//	55		
-/*	19	*/	LED_LIGHT(	0	,	57	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	510	,	435	,	0	),	5	),	//	58		
-/*	20	*/	LED_LIGHT(	0	,	60	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	450	,	450	,	0	),	5	),	//	61		
-/*	21	*/	LED_LIGHT(	0	,	63	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	450	,	435	,	0	),	5	),	//	64		
-/*	22	*/	LED_LIGHT(	0	,	66	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	390	,	450	,	0	),	5	),	//	67		
-/*	23	*/	LED_LIGHT(	0	,	69	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	390	,	435	,	0	),	5	),	//	70		
+/*	0	*/	LED_LIGHT(	0	,	0	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	1200	,	350	,	0	),	8	),	//	1		
+/*	1	*/	LED_LIGHT(	0	,	3	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	1190	,	350	,	0	),	8	),	//	4		
+/*	2	*/	LED_LIGHT(	0	,	6	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	1135	,	350	,	0	),	8	),	//	7		
+/*	3	*/	LED_LIGHT(	0	,	9	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	1125	,	350	,	0	),	8	),	//	10		
+/*	4	*/	LED_LIGHT(	0	,	12	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	1070	,	350	,	0	),	8	),	//	13		
+/*	5	*/	LED_LIGHT(	0	,	15	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	1060	,	350	,	0	),	8	),	//	16		
+/*	6	*/	LED_LIGHT(	0	,	18	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	1005	,	350	,	0	),	8	),	//	19		
+/*	7	*/	LED_LIGHT(	0	,	21	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	995	,	350	,	0	),	8	),	//	22		
+/*	8	*/	LED_LIGHT(	0	,	24	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	940	,	350	,	0	),	8	),	//	25		
+/*	9	*/	LED_LIGHT(	0	,	27	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	930	,	350	,	0	),	8	),	//	28		
+/*	10	*/	LED_LIGHT(	0	,	30	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	875	,	350	,	0	),	8	),	//	31		
+/*	11	*/	LED_LIGHT(	0	,	33	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	865	,	350	,	0	),	8	),	//	34		
+/*	12	*/	LED_LIGHT(	0	,	36	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	810	,	350	,	0	),	8	),	//	37		
+/*	13	*/	LED_LIGHT(	0	,	39	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	800	,	350	,	0	),	8	),	//	40		
+/*	14	*/	LED_LIGHT(	0	,	42	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	745	,	350	,	0	),	8	),	//	43		
+/*	15	*/	LED_LIGHT(	0	,	45	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	735	,	350	,	0	),	8	),	//	46		
+/*	16	*/	LED_LIGHT(	0	,	48	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	680	,	350	,	0	),	8	),	//	49		
+/*	17	*/	LED_LIGHT(	0	,	51	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	670	,	350	,	0	),	8	),	//	52		
+/*	18	*/	LED_LIGHT(	0	,	54	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	615	,	350	,	0	),	8	),	//	55		
+/*	19	*/	LED_LIGHT(	0	,	57	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	605	,	350	,	0	),	8	),	//	58		
+/*	20	*/	LED_LIGHT(	0	,	60	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	550	,	350	,	0	),	8	),	//	61		
+/*	21	*/	LED_LIGHT(	0	,	63	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	540	,	350	,	0	),	8	),	//	64		
+/*	22	*/	LED_LIGHT(	0	,	66	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	485	,	350	,	0	),	8	),	//	67		
+/*	23	*/	LED_LIGHT(	0	,	69	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	475	,	350	,	0	),	8	),	//	70		
 };																										
 																										
 const int NUM_DESIGN_LEDS = sizeof(DesignLight) / sizeof(DesignLight[0]);																										
@@ -68,18 +72,18 @@ const int NUM_DESIGN_LEDS = sizeof(DesignLight) / sizeof(DesignLight[0]);
 ********************/																										
 LED_LIGHT SafetyLight[] = {																										
 //				ODE id		AddressFrom																		Hardware(Start Address) setting 		
-/*	0	*/	LED_LIGHT(	0	,	72	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	1050	,	400	,	0	),	5	),	//	73		
-/*	1	*/	LED_LIGHT(	0	,	75	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	1050	,	390	,	0	),	5	),	//	76		
-/*	2	*/	LED_LIGHT(	0	,	78	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	930	,	400	,	0	),	5	),	//	79		
-/*	3	*/	LED_LIGHT(	0	,	81	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	930	,	390	,	0	),	5	),	//	82		
-/*	4	*/	LED_LIGHT(	0	,	84	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	810	,	400	,	0	),	5	),	//	85		
-/*	5	*/	LED_LIGHT(	0	,	87	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	810	,	390	,	0	),	5	),	//	88		
-/*	6	*/	LED_LIGHT(	0	,	90	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	690	,	400	,	0	),	5	),	//	91		
-/*	7	*/	LED_LIGHT(	0	,	93	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	690	,	390	,	0	),	5	),	//	94		
-/*	8	*/	LED_LIGHT(	0	,	96	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	570	,	400	,	0	),	5	),	//	97		
-/*	9	*/	LED_LIGHT(	0	,	99	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	570	,	390	,	0	),	5	),	//	100		
-/*	10	*/	LED_LIGHT(	0	,	102	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	true	,	ofPoint(	450	,	400	,	0	),	5	),	//	103		
-/*	11	*/	LED_LIGHT(	0	,	105	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	true	,	ofPoint(	450	,	390	,	0	),	5	),	//	106		
+/*	0	*/	LED_LIGHT(	0	,	72	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	false	,	ofPoint(	1200	,	315	,	0	),	8	),	//	73		
+/*	1	*/	LED_LIGHT(	0	,	75	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	false	,	ofPoint(	1190	,	315	,	0	),	8	),	//	76		
+/*	2	*/	LED_LIGHT(	0	,	78	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	false	,	ofPoint(	1070	,	315	,	0	),	8	),	//	79		
+/*	3	*/	LED_LIGHT(	0	,	81	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	false	,	ofPoint(	1060	,	315	,	0	),	8	),	//	82		
+/*	4	*/	LED_LIGHT(	0	,	84	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	false	,	ofPoint(	940	,	315	,	0	),	8	),	//	85		
+/*	5	*/	LED_LIGHT(	0	,	87	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	false	,	ofPoint(	930	,	315	,	0	),	8	),	//	88		
+/*	6	*/	LED_LIGHT(	0	,	90	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	false	,	ofPoint(	810	,	315	,	0	),	8	),	//	91		
+/*	7	*/	LED_LIGHT(	0	,	93	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	false	,	ofPoint(	800	,	315	,	0	),	8	),	//	94		
+/*	8	*/	LED_LIGHT(	0	,	96	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	false	,	ofPoint(	680	,	315	,	0	),	8	),	//	97		
+/*	9	*/	LED_LIGHT(	0	,	99	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	false	,	ofPoint(	670	,	315	,	0	),	8	),	//	100		
+/*	10	*/	LED_LIGHT(	0	,	102	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_RESTAURANT	,	false	,	ofPoint(	550	,	315	,	0	),	8	),	//	103		
+/*	11	*/	LED_LIGHT(	0	,	105	,	LED_DEVICE_TYPE_0	,	COLOR_FROM_ENTRANCE	,	false	,	ofPoint(	540	,	315	,	0	),	8	),	//	106		
 };																										
 																										
 const int NUM_SAFETY_LEDS = sizeof(SafetyLight) / sizeof(SafetyLight[0]);																										
@@ -197,8 +201,10 @@ void DMX::draw(double dimmer)
 
 	/********************
 	********************/
-	for(int i = 0; i < NUM_ODES; i++){
-		artnet.sendDmx(ode[i].get_IP(), ode[i].universe, SIZE_DMX_UNIVERSE);
+	if(IsEnable_Dmx()){
+		for(int i = 0; i < NUM_ODES; i++){
+			artnet.sendDmx(ode[i].get_IP(), ode[i].universe, SIZE_DMX_UNIVERSE);
+		}
 	}
 }
 
@@ -213,16 +219,16 @@ void DMX::draw_test(double dimmer)
 		********************/
 		int num_Leds;
 		LED_LIGHT* LedLights;
-		LED_TEST& LedTest = test_DesignLight;
+		LED_TEST* LedTest;
 		if(LedRole == 0){ // SafetyLight
 			num_Leds = NUM_SAFETY_LEDS;
 			LedLights = SafetyLight;
-			LedTest = test_DesignLight;
+			LedTest = &test_SafetyLight;
 
 		}else{ // DesignLight
 			num_Leds = NUM_DESIGN_LEDS;
 			LedLights = DesignLight;
-			LedTest = test_SafetyLight;
+			LedTest = &test_DesignLight;
 			
 		}
 		
@@ -231,18 +237,18 @@ void DMX::draw_test(double dimmer)
 		for(int i = 0; i < num_Leds; i++){
 			switch(LedLights[i].LedDeviceType){
 				case LED_DEVICE_TYPE_0:
-					if( (LedTest.LedId == -1) || (i == LedTest.LedId) ){
+					if( (LedTest->LedId == -1) || (i == LedTest->LedId) ){
 						/********************
 						********************/
-						int R = LedTest.LedParam.get_R() * (dimmer / 255);
+						int R = LedTest->LedParam.get_R() * (dimmer / 255);
 						if(255 < R)	R = 255;
 						if(R < 0)	R = 0;
 	
-						int G = LedTest.LedParam.get_G() * (dimmer / 255);
+						int G = LedTest->LedParam.get_G() * (dimmer / 255);
 						if(255 < G)	G = 255;
 						if(G < 0)	G = 0;
 	
-						int B = LedTest.LedParam.get_B() * (dimmer / 255);
+						int B = LedTest->LedParam.get_B() * (dimmer / 255);
 						if(255 < B)	B = 255;
 						if(B < 0)	B = 0;
 						
@@ -274,8 +280,10 @@ void DMX::draw_test(double dimmer)
 	
 	/********************
 	********************/
-	for(int i = 0; i < NUM_ODES; i++){
-		artnet.sendDmx(ode[i].get_IP(), ode[i].universe, SIZE_DMX_UNIVERSE);
+	if(IsEnable_Dmx()){
+		for(int i = 0; i < NUM_ODES; i++){
+			artnet.sendDmx(ode[i].get_IP(), ode[i].universe, SIZE_DMX_UNIVERSE);
+		}
 	}
 }
 

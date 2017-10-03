@@ -33,12 +33,17 @@ public:
 	}
 	
 	void draw(){
-#ifdef CHECK_LED_ANIM_ON_GUI
-		if(b_Simulate){
-			ofSetColor(LedParam->get_R(), LedParam->get_G(), LedParam->get_B(), 255);
-			ofDrawCircle(pos, radius);
+		if(IsEnable_GuiSimulation()){
+			if(b_Simulate){
+				ofEnableAlphaBlending();
+				ofEnableBlendMode(OF_BLENDMODE_ADD);
+				
+				ofSetColor(LedParam->get_R(), LedParam->get_G(), LedParam->get_B(), 200);
+				ofDrawCircle(pos, radius);
+				
+				ofDisableAlphaBlending();
+			}
 		}
-#endif
 	}
 };
 
