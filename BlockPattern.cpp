@@ -15,7 +15,7 @@ void test_BlockPattern()
 ************************************************************/
 const struct BLOCK_PATTERN Bp[] = {					
 	{	"FLOW",			
-		1.5	, // Duration[sec]		
+		1	, // Duration[sec]		
 		12	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
@@ -26,10 +26,10 @@ const struct BLOCK_PATTERN Bp[] = {
 		},			
 	},				
 	{	"SIN",			
-		3	, // Duration[sec]		
+		1	, // Duration[sec]		
 		12	, // Num Logical chs		
-		1	, // num waves from		
-		2.5	, // to		
+		0.5	, // num waves from		
+		1.5	, // to		
 		{	//		
 			{	SHORT_PATTERN::Sp_cos	},
 			{	NULL	},
@@ -38,4 +38,3 @@ const struct BLOCK_PATTERN Bp[] = {
 };					
 					
 const int NUM_PATTERN_TYPES_BP = sizeof(Bp) / sizeof(Bp[0]);					
-

@@ -4,6 +4,12 @@
 
 /************************************************************
 ************************************************************/
+BOOT_MODE BootMode = BOOT_MODE__STANDING;
+int argin_DesignCategory = -1;
+int argin_BlockGrouping_id = -1;
+
+/************************************************************
+************************************************************/
 
 /******************************
 ******************************/
@@ -41,3 +47,57 @@ LED_PARAM operator-(const LED_PARAM& left, const LED_PARAM& right)
 	return ret;
 }
 
+/******************************
+******************************/
+bool IsEnable_LedManager()
+{
+	if(BootMode != BOOT_MODE__MIC_TEST){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/******************************
+******************************/
+bool IsEnable_GuiSimulation()
+{
+	if( (BootMode == BOOT_MODE__GUI_SIMULATION) || (BootMode == BOOT_MODE__LED_SIMULATION) || (BootMode == BOOT_MODE__PLAY_RECED) ){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/******************************
+******************************/
+bool IsEnable_Dmx()
+{
+	if( (BootMode == BOOT_MODE__STANDING) || (BootMode == BOOT_MODE__LED_SIMULATION) || (BootMode == BOOT_MODE__PLAY_RECED) ){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/******************************
+******************************/
+bool IsEnable_RecMic()
+{
+	if( BootMode == BOOT_MODE__MIC_TEST ){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/******************************
+******************************/
+bool IsEnable_PlayReced()
+{
+	if( BootMode == BOOT_MODE__PLAY_RECED ){
+		return true;
+	}else{
+		return false;
+	}
+}

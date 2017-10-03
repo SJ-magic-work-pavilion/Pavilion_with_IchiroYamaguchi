@@ -4,11 +4,21 @@
 
 /************************************************************
 ************************************************************/
-// #define MIC_ONLY
-#define CHECK_LED_ANIM_ON_GUI
+// #define LOG_DIRECT_FILTER
 
 /************************************************************
 ************************************************************/
+enum BOOT_MODE{
+	BOOT_MODE__STANDING,
+	
+	BOOT_MODE__MIC_TEST,			// Mic only. DesignManager:off.
+	BOOT_MODE__GUI_SIMULATION,		// DMX off.
+	BOOT_MODE__LED_SIMULATION,		// LED test.
+	BOOT_MODE__PLAY_RECED,			// Play Reced Mic volume. LED test.
+	
+	NUM_BOOT_MODE,
+};
+
 enum{
 	WIDTH = 1280,
 	HEIGHT = 720,
@@ -124,6 +134,18 @@ LED_PARAM operator-(const LED_PARAM& left, const LED_PARAM& right);
 
 /************************************************************
 ************************************************************/
+bool IsEnable_LedManager();
+bool IsEnable_GuiSimulation();
+bool IsEnable_Dmx();
+bool IsEnable_RecMic();
+bool IsEnable_PlayReced();
+
+/************************************************************
+************************************************************/
 #define ERROR_MSG(); printf("Error in %s:%d\n", __FILE__, __LINE__);
 
-
+/************************************************************
+************************************************************/
+extern BOOT_MODE BootMode;
+extern int argin_DesignCategory;
+extern int argin_BlockGrouping_id;

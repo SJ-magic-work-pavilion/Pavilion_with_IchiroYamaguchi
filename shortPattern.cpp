@@ -107,7 +107,8 @@ double SHORT_PATTERN::Sp_cos(const double Progress, const int NUM_CHS, const int
 	const double OFS_STEP = MAX_PROGRESS * NUM_WAVES_IN_SPACE / NUM_CHS;
 	const double phase_percent = OFS_STEP * N;
 	
-	return 0.5 * cos( TWO_PI * (Progress + phase_percent) / MAX_PROGRESS ) + 0.5;
+	// return 0.5 * cos( TWO_PI * (Progress + phase_percent) / MAX_PROGRESS ) + 0.5; // Entrance -> 店
+	return 0.5 * cos( TWO_PI * (Progress - phase_percent) / MAX_PROGRESS ) + 0.5; // 店 -> Entrance
 }
 
 

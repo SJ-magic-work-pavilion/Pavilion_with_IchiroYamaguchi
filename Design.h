@@ -36,22 +36,27 @@ struct COLOR_COMBINATION{
 	****************************************/
 	COLOR_COMBINATION() {}
 	
-	COLOR_COMBINATION(const LED_PARAM _calm, const LED_PARAM _0, const LED_PARAM _05, const LED_PARAM _1, const LED_PARAM _Color_SafetyLight)
-	: Color_calm(_calm), Color_0(_0), Color_05(_05), Color_1(_1), Color_SafetyLight(_Color_SafetyLight)
+	COLOR_COMBINATION(const double _calm_ratio, const LED_PARAM _0, const LED_PARAM _05, const LED_PARAM _1, const LED_PARAM _Color_SafetyLight)
+	: Color_calm(_0 * _calm_ratio), Color_0(_0), Color_05(_05), Color_1(_1), Color_SafetyLight(_Color_SafetyLight)
 	{
 	}
 };
 
 struct COLOR_COMBINATION_SET{
+	string Name;
+	
 	int Weight;
 	COLOR_COMBINATION Combination[NUM_COLOR_SURFACES];
 	
-	COLOR_COMBINATION_SET(int _weight,
-							LED_PARAM _calm0, LED_PARAM _0_0, LED_PARAM _0_05, LED_PARAM _0_1, LED_PARAM _Color_SafetyLight_0,
-							LED_PARAM _calm1, LED_PARAM _1_0, LED_PARAM _1_05, LED_PARAM _1_1, LED_PARAM _Color_SafetyLight_1
+	COLOR_COMBINATION_SET(	string _Name,
+							int _weight,
+							double _calm0, LED_PARAM _0_0, LED_PARAM _0_05, LED_PARAM _0_1, LED_PARAM _Color_SafetyLight_0,
+							double _calm1, LED_PARAM _1_0, LED_PARAM _1_05, LED_PARAM _1_1, LED_PARAM _Color_SafetyLight_1
 							)
 	: Weight(_weight)
 	{
+		Name = _Name;
+		
 		new(&Combination[COLOR_FROM_RESTAURANT]) COLOR_COMBINATION(_calm0, _0_0, _0_05, _0_1, _Color_SafetyLight_0);
 		new(&Combination[COLOR_FROM_ENTRANCE]) COLOR_COMBINATION(_calm1, _1_0, _1_05, _1_1, _Color_SafetyLight_1);
 	}
@@ -111,6 +116,12 @@ private:
 	****************************************/
 	/********************
 	********************/
+#ifdef LOG_DIRECT_FILTER
+	FILE* fp_debug;
+#endif
+
+	/********************
+	********************/
 	double LevSync;
 	double SpeedSync;
 	
@@ -120,6 +131,11 @@ private:
 	int* Weight_ColorCombination_id;
 	
 	int LedNumSync;
+	
+	/********************
+	********************/
+	float LPF_Direct_NumLeds_ThreshSec;
+	float LPF_Direct_NumWaves_ThreshSec;
 	
 	/********************
 	********************/
@@ -134,6 +150,9 @@ private:
 	/* */
 	FADER Fader_DesignLight;
 	FADER Fader_SafetyLight;
+	
+	FADER Fader_CalmColor;
+	LED_PARAM CalmColor_pre[NUM_COLOR_SURFACES];
 	
 	float t_calm_From;
 	
@@ -169,6 +188,8 @@ private:
 	void Dice_LedId_NumLeds_Sync();
 	void Dice_ColorCombination();
 	
+	double get_FilterOut(double Last, double Raw, double thresh_sec, double dt);
+	
 	void update_SafetyLight();
 	void update_DesignLight(double vol, double Vol_Map_L, double Vol_Map_H);
 	void update_DesignLight_calm();
@@ -198,5 +219,7 @@ public:
 	
 	void Escape_StateChart();
 	void Start_StateChart();
+	
+	void update_GuiParam(float _LPF_Direct_NumLeds_ThreshSec, float _LPF_Direct_NumWaves_ThreshSec);
 };
 
