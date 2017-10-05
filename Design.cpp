@@ -60,7 +60,7 @@ int DESIGN_MANAGER::NUM_COLOR_COMBINATIONS = sizeof(ColorCombination)/sizeof(Col
 ******************************/
 int W_DesignCategory[] = {
 	1, // DESIGN__LEV_MIC_SYNC,
-	3, // DESIGN__PATTERN,
+	2, // DESIGN__PATTERN,
 	1, // DESIGN__ALL_ON,
 	1, // DESIGN__NUM_LEDS,
 };
@@ -577,7 +577,8 @@ void DESIGN_MANAGER::Dice_LedId_NumLeds_Sync()
 	int i= NUM_DESIGN_LEDS;
 	
 	while(i--){
-		int j = rand() % (i + 1);
+		// int j = rand() % (i + 1);
+		int j = (int)( ((double)rand() / ((double)RAND_MAX + 1)) * (i + 1) );
 		
 		int temp = LedId_ExchangeTable_NumSync[i];
 		LedId_ExchangeTable_NumSync[i] = LedId_ExchangeTable_NumSync[j];
@@ -683,7 +684,8 @@ int DESIGN_MANAGER::Dice_index(int *Weight, int NUM)
 	/***********************
 	random number
 	***********************/
-	int RandomNumber = rand() % TotalWeight;
+	// int RandomNumber = rand() % TotalWeight;
+	int RandomNumber = (int)( ((double)rand() / ((double)RAND_MAX + 1)) * (TotalWeight) );
 	
 	/***********************
 	define play mode
