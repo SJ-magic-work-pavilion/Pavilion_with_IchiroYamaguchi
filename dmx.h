@@ -38,7 +38,7 @@ public:
 				ofEnableAlphaBlending();
 				ofEnableBlendMode(OF_BLENDMODE_ADD);
 				
-				ofSetColor(LedParam->get_R(), LedParam->get_G(), LedParam->get_B(), 200);
+				ofSetColor(LedParam->get_R(), LedParam->get_G(), LedParam->get_B(), 230);
 				ofDrawCircle(pos, radius);
 				
 				ofDisableAlphaBlending();

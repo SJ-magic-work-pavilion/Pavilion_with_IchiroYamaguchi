@@ -10,13 +10,18 @@
 /************************************************************
 ************************************************************/
 enum{
-	MAX_SHORTPATTERN_INDEX = 10,
+	MAX_SHORTPATTERN_INDEX = 30,
 };
 enum BP_PATTERN_ID{
 	BP_PERIOD = -1,
 	
-	BP_FLOW = 0,
-	BP_SIN,
+	BP_FLOW_12 = 0,
+	BP_FLOW_6,
+	BP_SIN_12,
+	BP_SIN_6,
+	BP_STROBE_1,
+	BP_STROBE_2,
+	BP_ON_HIGH,
 };
 
 
@@ -33,7 +38,9 @@ struct SP_AND_PARAM{
 **************************************************/
 struct BLOCK_PATTERN{
 	char name[BUF_SIZE];
-	double Duration;
+	const double Duration_From;
+	const double Duration_To;
+	
 	const int NUM_LOGICAL_CHS;
 	const double NumWaves_inSpace_From;
 	const double NumWaves_inSpace_To;

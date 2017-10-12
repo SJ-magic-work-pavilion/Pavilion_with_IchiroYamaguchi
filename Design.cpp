@@ -5,7 +5,7 @@
 /************************************************************
 param
 ************************************************************/
-static const double calmColor_DarkRatio = 0.3;
+static const double calmColor_DarkRatio = 0.01;
 
 COLOR_COMBINATION_SET DESIGN_MANAGER::ColorCombination[] = {
 	/*
@@ -60,7 +60,7 @@ int DESIGN_MANAGER::NUM_COLOR_COMBINATIONS = sizeof(ColorCombination)/sizeof(Col
 ******************************/
 int W_DesignCategory[] = {
 	1, // DESIGN__LEV_MIC_SYNC,
-	2, // DESIGN__PATTERN,
+	7, // DESIGN__PATTERN,
 	1, // DESIGN__ALL_ON,
 	1, // DESIGN__NUM_LEDS,
 };
@@ -74,7 +74,6 @@ func
 ******************************/
 DESIGN_MANAGER::DESIGN_MANAGER()
 : LevSync(0)
-, SpeedSync(0)
 , ColorCombination_id(0)
 , LedNumSync(0)
 , b_StateChart(true)
@@ -177,12 +176,11 @@ void DESIGN_MANAGER::update(double vol, double Vol_thresh_L, double Vol_thresh_H
 	
 	/********************
 	********************/
-	LevSync		= ofMap(vol, Vol_Map_L, Vol_Map_H, 0, 1.0, true);
-	SpeedSync	= ofMap(vol, Vol_Map_L, Vol_Map_H, 1.0, 1.5, true);
+	LevSync		= ofMap(vol, Vol_Map_L, Vol_Map_H, 0.04, 1.0, true);
 	
 	fix_sync_maxColor(vol, Vol_Map_L, Vol_Map_H);
 	
-	double LedNumSync_Raw	= ofMap(vol, Vol_Map_L, Vol_Map_H, 0, NUM_DESIGN_LEDS, true);
+	double LedNumSync_Raw	= ofMap(vol, Vol_Map_L, Vol_Map_H, NUM_DESIGN_LEDS/3, NUM_DESIGN_LEDS, true);
 	LedNumSync = int( get_FilterOut(LedNumSync, LedNumSync_Raw, LPF_Direct_NumLeds_ThreshSec, t_now - t_LastINT) );
 #ifdef LOG_DIRECT_FILTER
 	if(DesignCategory == DESIGN__NUM_LEDS) fprintf(fp_debug, "%f,%f,%d\n", t_now, LedNumSync_Raw, LedNumSync);
@@ -298,6 +296,24 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__LevSync()
 
 /******************************
 ******************************/
+void DESIGN_MANAGER::calProgress(BLOCK& Block, double t_now, double Duration)
+{
+	Block.Progress += 100 * ((t_now - Block.t_From) / Duration);
+	
+	Block.t_From = t_now;
+
+	if(100 < Block.Progress){
+		Block.Progress -= 100;
+		
+		Block.Progress_id++;
+		if(Bp[Block.Bp_Pattern_id].ShortPattern_Param[Block.Progress_id].pShortPattern == NULL){
+			Block.Progress_id = 0;
+		}
+	}
+}
+
+/******************************
+******************************/
 void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol_Map_L, double Vol_Map_H)
 {
 	/********************
@@ -317,7 +333,9 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 		int &Progress_id = BlockGrouping[BlockGrouping_id].Block[i].Progress_id;
 		double& NumWavesInSpace = BlockGrouping[BlockGrouping_id].Block[i].NumWavesInSpace;
 		
-		double Progress = calProgress(t_now, BlockGrouping[BlockGrouping_id].Block[i].t_From, Bp[Bp_pattern_id].Duration, SpeedSync);
+		double Duration = ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].Duration_From, Bp[Bp_pattern_id].Duration_To, true);
+		calProgress(BlockGrouping[BlockGrouping_id].Block[i], t_now, Duration);
+		
 		double NumWavesInSpace_Raw = ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].NumWaves_inSpace_From, Bp[Bp_pattern_id].NumWaves_inSpace_To, true);
 		NumWavesInSpace = get_FilterOut(NumWavesInSpace, NumWavesInSpace_Raw, LPF_Direct_NumWaves_ThreshSec, t_now - t_LastINT);
 		
@@ -332,17 +350,21 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 		for(int j = 0; j < Bp[Bp_pattern_id].NUM_LOGICAL_CHS; j++){
 			/********************
 			********************/
+			double Progress = BlockGrouping[BlockGrouping_id].Block[i].Progress;
 			double Lev = Bp[Bp_pattern_id].ShortPattern_Param[Progress_id].pShortPattern(Progress, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, j, NumWavesInSpace);
 			
 			/********************
 			********************/
 			LED_PARAM Dynamic[NUM_COLOR_SURFACES];
 			
-			LED_PARAM Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_RESTAURANT ].maxColor;
+			LED_PARAM Color_max;
+			if(BlockGrouping[BlockGrouping_id].Block[i].b_ColorSync)	Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_RESTAURANT ].maxColor;
+			else														Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_RESTAURANT ].Color_0;
 			Dynamic[COLOR_FROM_RESTAURANT] = Color_max * Lev * Fader_DesignLight.k;
 			
 			/* */
-			Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_ENTRANCE ].maxColor;
+			if(BlockGrouping[BlockGrouping_id].Block[i].b_ColorSync)	Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_ENTRANCE ].maxColor;
+			else														Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_ENTRANCE ].Color_0;
 			Dynamic[COLOR_FROM_ENTRANCE] = Color_max * Lev * Fader_DesignLight.k;
 			
 			/********************
@@ -352,17 +374,6 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 				
 				COLOR_SURFACE ColorSurface = DesignLight[Led_physical_id].ColorSurface;
 				DesignLight[Led_physical_id].LedParam += Dynamic[ColorSurface];
-			}
-		}
-		
-		/********************
-		********************/
-		if(100 <= Progress){
-			BlockGrouping[BlockGrouping_id].Block[i].t_From = t_now;
-			
-			Progress_id++;
-			if(Bp[Bp_pattern_id].ShortPattern_Param[Progress_id].pShortPattern == NULL){
-				Progress_id = 0;
 			}
 		}
 	}
@@ -389,10 +400,10 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__NumLeds()
 {
 	for(int i = 0; i < NUM_DESIGN_LEDS; i++){
 		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
-		// LED_PARAM Color_calm = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm;
 		LED_PARAM Color_calm = CalmColor_pre[ColorSurface] * (1 - Fader_CalmColor.k) + ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm * Fader_CalmColor.k;
 		
-		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k);
+		// DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k);
+		DesignLight[i].LedParam = Color_calm;
 	}
 	
 	for(int i = 0; i < LedNumSync; i++){
@@ -415,13 +426,6 @@ void DESIGN_MANAGER::update_DesignLight_calm()
 		
 		DesignLight[i].LedParam = LedParam;
 	}
-}
-
-/******************************
-******************************/
-double DESIGN_MANAGER::calProgress(double t_now, double t_From, double Duration, double Speed)
-{
-	return 100 * (Speed * (t_now - t_From) / Duration);
 }
 
 /******************************
@@ -563,6 +567,7 @@ void DESIGN_MANAGER::Transition__to_RUN()
 	
 	for( int i = 0; !IsPeriodOfBlockGroup(BlockGrouping[BlockGrouping_id].Block[i]); i++ ){
 		BlockGrouping[BlockGrouping_id].Block[i].t_From = t_now;
+		BlockGrouping[BlockGrouping_id].Block[i].Progress = 0;
 	}
 }
 

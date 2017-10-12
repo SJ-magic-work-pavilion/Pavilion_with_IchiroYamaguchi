@@ -117,7 +117,7 @@ void ofApp::setup(){
 	GG_SoundFilter.add(LPF_Sound_ThreshSec.setup("LPF Snd Th_Sec", 0.3, 0, 3.0));
 	GG_SoundFilter.add(gui_b_LimitVolDown.setup("b_LimitVolDown", false));
 	GG_SoundFilter.add(gui_LimitVolDown_tan.setup("LimitDown tan", 0.2, 0.05, 0.5));
-	GG_SoundFilter.add(Monitor_v_max.setup("v max", 1.0, 0.1, 2.0));
+	GG_SoundFilter.add(Monitor_v_max.setup("v max", 0.5, 0.1, 2.0));
 	gui.add(&GG_SoundFilter);
 	
 	GG_DirectFilter.setup("Direct Filter");
@@ -126,16 +126,16 @@ void ofApp::setup(){
 	gui.add(&GG_DirectFilter);
 	
 	GG_VolRange.setup("Vol Range");
+	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.045, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.06, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.045, 0, 0.5));
+	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.16, 0, 0.5));
 	/*
-	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.05, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.1, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0, 0, 0.5));
-	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.3, 0, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.14, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.16, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.14, 0, 0.5));
+	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.375, 0, 0.5));
 	*/
-	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.12, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.145, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.12, 0, 0.5));
-	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.37, 0, 0.5));
 	gui.add(&GG_VolRange);
 	
 	/* */
@@ -250,7 +250,11 @@ void ofApp::draw_Graph()
 	Vbo_SoundLevel.draw(GL_LINE_STRIP, 0, NUM_POINTS);
 	
 	/* 横線 */
+#if (PLATFORM == PLATFORM__MYMAC)
 	ofSetColor(150);
+#else
+	ofSetColor(150, 40);
+#endif
 	ofSetLineWidth(1);
 	const double y_step = (ofGetHeight() - MARGIN) / 10;
 	for(int i = 0; i * y_step < ofGetHeight(); i++){
@@ -263,7 +267,11 @@ void ofApp::draw_Graph()
 	
 	/********************
 	********************/
+#if (PLATFORM == PLATFORM__MYMAC)
 	ofSetColor(150);
+#else
+	ofSetColor(150, 40);
+#endif
 	ofSetLineWidth(1);
 	const double x_step = 43.0664; // 1 sec
 	for(int i = 0; i * x_step < ofGetWidth(); i++){

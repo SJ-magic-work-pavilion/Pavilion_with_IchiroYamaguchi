@@ -16,8 +16,11 @@ struct BLOCK{
 	vector<int> LogicalCh[MAX_LOGICAL_CHS];
 	
 	const BP_PATTERN_ID Bp_Pattern_id;
+	const bool b_ColorSync;
+	
 	int Progress_id;
 	float t_From;
+	double Progress;
 	
 	double NumWavesInSpace;
 };
