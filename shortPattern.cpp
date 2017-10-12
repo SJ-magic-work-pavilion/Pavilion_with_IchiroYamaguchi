@@ -10,9 +10,14 @@ static FUNC_SP pFunc[] = {
 	SHORT_PATTERN::Sp_FlowOn,
 	SHORT_PATTERN::Sp_FlowOff,
 	SHORT_PATTERN::Sp_cos,
+	SHORT_PATTERN::Sp_Flash__1_2,
+	SHORT_PATTERN::Sp_Flash__2_2,
 };
 static const int Num_ShortPatterns = sizeof(pFunc) / sizeof(pFunc[0]);
 
+
+const double SHORT_PATTERN::Lev_Flow_L = 0.02;
+const double SHORT_PATTERN::Lev_Flash_L = 0.03;
 
 /************************************************************
 ************************************************************/
@@ -66,10 +71,10 @@ double SHORT_PATTERN::Sp_FlowOn(const double Progress, const int NUM_CHS, const 
 	const double ProgressFrom	= PROGRESS_STEP * N;
 	
 	if(Progress < 0){
-		return 0;
+		return Lev_Flow_L;
 	}else{
 		if(ProgressFrom <= Progress)	return 1;
-		else							return 0;
+		else							return Lev_Flow_L;
 	}
 }
 
@@ -89,7 +94,7 @@ double SHORT_PATTERN::Sp_FlowOff(const double Progress, const int NUM_CHS, const
 	if(Progress < 0){
 		return 1;
 	}else{
-		if(ProgressFrom <= Progress)	return 0;
+		if(ProgressFrom <= Progress)	return Lev_Flow_L;
 		else							return 1;
 	}
 }
@@ -111,5 +116,64 @@ double SHORT_PATTERN::Sp_cos(const double Progress, const int NUM_CHS, const int
 	return 0.5 * cos( TWO_PI * (Progress - phase_percent) / MAX_PROGRESS ) + 0.5; // 店 -> Entrance
 }
 
+/******************************
+******************************/
+double SHORT_PATTERN::Sp_On_High(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE)
+{
+	/********************
+	********************/
+	if(NUM_CHS <= N) { ERROR_MSG(); std::exit(1); }
+	
+	/********************
+	********************/
+	return 1;
+}
 
+/******************************
+******************************/
+double SHORT_PATTERN::Sp_Flash__1_2(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE)
+{
+	/********************
+	********************/
+	if(NUM_CHS <= N) { ERROR_MSG(); std::exit(1); }
+	
+	/********************
+	********************/
+	if(N < NUM_CHS/2){
+		const double tan = -(1.0 - Lev_Flash_L)/MAX_PROGRESS;
+		
+		if( (Progress < 0) || (MAX_PROGRESS < Progress) ){
+			return Lev_Flash_L;
+		}else{
+			return 1 + tan * Progress;
+		}
+	}else{
+	
+		return Lev_Flash_L;
+	}
+}
+
+/******************************
+******************************/
+double SHORT_PATTERN::Sp_Flash__2_2(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE)
+{
+	/********************
+	********************/
+	if(NUM_CHS <= N) { ERROR_MSG(); std::exit(1); }
+	
+	/********************
+	********************/
+	if(NUM_CHS/2 <= N){
+		const double tan = -(1.0 - Lev_Flash_L)/MAX_PROGRESS;
+		
+		if( (Progress < 0) || (MAX_PROGRESS < Progress) ){
+			return Lev_Flash_L;
+		}else{
+			return 1 + tan * Progress;
+		}
+	}else{
+	
+		return Lev_Flash_L;
+	}
+}
 

@@ -64,26 +64,42 @@ struct COLOR_COMBINATION_SET{
 
 class FADER{
 private:
-	const double tan;
+	double tan;
+	bool b_immediate;
 	
 public:
 	double k;
 	
 	FADER(const double dt) // dtでkが0->1に変化.
-	: tan(1.0/dt), k(0)
+	: k(0)
 	{
+		if(0 < dt){
+			tan = 1.0/dt;
+			b_immediate = false;
+		}else{
+			tan = 0;
+			b_immediate = true;
+		}
 	}
 	
 	void update_Up(float dt)
 	{
-		k = k + tan * dt;
-		if(1.0 < k) k = 1.0;
+		if(b_immediate){
+			k = 1.0;
+		}else{
+			k = k + tan * dt;
+			if(1.0 < k) k = 1.0;
+		}
 	}
 	
 	void update_Down(float dt)
 	{
-		k = k - tan * dt;
-		if(k < 0) k = 0;
+		if(b_immediate){
+			k = 0;
+		}else{
+			k = k - tan * dt;
+			if(k < 0) k = 0;
+		}
 	}
 };
 
@@ -199,7 +215,7 @@ private:
 	void update_DesignLight_Run_Echo__NumLeds();
 	void update_DesignLight_Run_Echo__Pattern(double vol, double Vol_Map_L, double Vol_Map_H);
 	
-	double calProgress(double t_now, double t_From, double Duration, double Speed);
+	void calProgress(BLOCK& Block, double t_now, double Duration);
 	void draw_Infos();
 	void draw_ColorInfos();
 	

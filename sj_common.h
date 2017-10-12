@@ -4,6 +4,12 @@
 
 /************************************************************
 ************************************************************/
+// #define SJ_RELEASE
+
+#define PLATFORM__MYMAC		0
+#define PLATFORM__PAVILION	1
+	#define PLATFORM PLATFORM__MYMAC
+	
 // #define LOG_DIRECT_FILTER
 
 /************************************************************
