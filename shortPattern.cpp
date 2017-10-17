@@ -131,6 +131,25 @@ double SHORT_PATTERN::Sp_On_High(const double Progress, const int NUM_CHS, const
 
 /******************************
 ******************************/
+double SHORT_PATTERN::Sp_Flash__1_1(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE)
+{
+	/********************
+	********************/
+	if(NUM_CHS <= N) { ERROR_MSG(); std::exit(1); }
+	
+	/********************
+	********************/
+	const double tan = -(1.0 - Lev_Flash_L)/MAX_PROGRESS;
+	
+	if( (Progress < 0) || (MAX_PROGRESS < Progress) ){
+		return Lev_Flash_L;
+	}else{
+		return 1 + tan * Progress;
+	}
+}
+
+/******************************
+******************************/
 double SHORT_PATTERN::Sp_Flash__1_2(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE)
 {
 	/********************

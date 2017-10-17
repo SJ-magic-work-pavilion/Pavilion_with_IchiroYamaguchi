@@ -19,6 +19,7 @@ enum BP_PATTERN_ID{
 	BP_FLOW_6,
 	BP_SIN_12,
 	BP_SIN_6,
+	BP_STROBE_24,
 	BP_STROBE_1,
 	BP_STROBE_2,
 	BP_ON_HIGH,
@@ -44,6 +45,11 @@ struct BLOCK_PATTERN{
 	const int NUM_LOGICAL_CHS;
 	const double NumWaves_inSpace_From;
 	const double NumWaves_inSpace_To;
+	
+	const bool b_LogicalID_Random;
+	const bool b_ValidCh_VolSync;
+	
+	const int BlankProbability;
 	
 	const SP_AND_PARAM ShortPattern_Param[MAX_SHORTPATTERN_INDEX];
 };

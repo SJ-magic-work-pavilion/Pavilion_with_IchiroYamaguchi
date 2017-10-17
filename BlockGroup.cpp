@@ -59,7 +59,7 @@ bool IsPeriodOfBlockGroup(BLOCK &block)
 ************************************************************/
 BLOCK_GROUP BlockGrouping[] = {							
 	{	"FLOW"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -87,7 +87,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_REV"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -115,7 +115,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_OUT"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -137,7 +137,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_IN"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -159,7 +159,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_TWIST"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -187,7 +187,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_TWIST_REV"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -215,7 +215,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_TWIST_OUT"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -237,7 +237,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_TWIST_IN"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -259,7 +259,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW__AND__STOP"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -294,7 +294,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"FLOW_REV__AND__STOP"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -329,7 +329,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STOP__AND__FLOW"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -364,7 +364,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STOP__AND__FLOW_REV"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -399,7 +399,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -427,7 +427,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_REV"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -455,7 +455,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_OUT"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -477,7 +477,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_IN"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -499,7 +499,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_TWIST"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -527,7 +527,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_TWIST_REV"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -555,7 +555,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_TWIST_OUT"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -577,7 +577,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_TWIST_IN"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -599,7 +599,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN__AND__STOP"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -634,7 +634,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"SIN_REV__AND__STOP"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -669,7 +669,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STOP__AND__SIN"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -704,7 +704,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STOP__AND__SIN_REV"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -739,7 +739,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STROBE_1"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -756,7 +756,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STROBE_2"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -774,7 +774,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STROBE_3"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -792,7 +792,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STROBE_4"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -810,7 +810,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STROBE_6"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -828,7 +828,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"STROBE_12"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -836,6 +836,46 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 2, 5, 6, 9, 10, 13, 14, 17, 18, 21, 22, 	},
 				},			
 				BP_STROBE_2	,	// Bp_Pattern_id	
+				true	,	// b_ColorSync	
+			},				
+			{// period				
+				{// LogicalCh[]			
+				},			
+				BP_PERIOD	,	// Bp_Pattern_id	
+			},				
+		},					
+	},						
+	{	"CAM_STROBE"	,				
+		1	,	// weight			
+		{ // Block					
+			{// Block[0]				
+				{// LogicalCh[]			
+					{	0,	},
+					{	1,	},
+					{	2,	},
+					{	3,	},
+					{	4,	},
+					{	5,	},
+					{	6,	},
+					{	7,	},
+					{	8,	},
+					{	9,	},
+					{	10,	},
+					{	11,	},
+					{	12,	},
+					{	13,	},
+					{	14,	},
+					{	15,	},
+					{	16,	},
+					{	17,	},
+					{	18,	},
+					{	19,	},
+					{	20,	},
+					{	21,	},
+					{	22,	},
+					{	23,	},
+				},			
+				BP_STROBE_24	,	// Bp_Pattern_id	
 				true	,	// b_ColorSync	
 			},				
 			{// period				

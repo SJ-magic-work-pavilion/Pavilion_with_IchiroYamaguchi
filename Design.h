@@ -40,6 +40,11 @@ struct COLOR_COMBINATION{
 	: Color_calm(_0 * _calm_ratio), Color_0(_0), Color_05(_05), Color_1(_1), Color_SafetyLight(_Color_SafetyLight)
 	{
 	}
+	
+	COLOR_COMBINATION(const LED_PARAM _calm, const LED_PARAM _0, const LED_PARAM _05, const LED_PARAM _1, const LED_PARAM _Color_SafetyLight)
+	: Color_calm(_calm), Color_0(_0), Color_05(_05), Color_1(_1), Color_SafetyLight(_Color_SafetyLight)
+	{
+	}
 };
 
 struct COLOR_COMBINATION_SET{
@@ -52,6 +57,19 @@ struct COLOR_COMBINATION_SET{
 							int _weight,
 							double _calm0, LED_PARAM _0_0, LED_PARAM _0_05, LED_PARAM _0_1, LED_PARAM _Color_SafetyLight_0,
 							double _calm1, LED_PARAM _1_0, LED_PARAM _1_05, LED_PARAM _1_1, LED_PARAM _Color_SafetyLight_1
+							)
+	: Weight(_weight)
+	{
+		Name = _Name;
+		
+		new(&Combination[COLOR_FROM_RESTAURANT]) COLOR_COMBINATION(_calm0, _0_0, _0_05, _0_1, _Color_SafetyLight_0);
+		new(&Combination[COLOR_FROM_ENTRANCE]) COLOR_COMBINATION(_calm1, _1_0, _1_05, _1_1, _Color_SafetyLight_1);
+	}
+	
+	COLOR_COMBINATION_SET(	string _Name,
+							int _weight,
+							LED_PARAM _calm0, LED_PARAM _0_0, LED_PARAM _0_05, LED_PARAM _0_1, LED_PARAM _Color_SafetyLight_0,
+							LED_PARAM _calm1, LED_PARAM _1_0, LED_PARAM _1_05, LED_PARAM _1_1, LED_PARAM _Color_SafetyLight_1
 							)
 	: Weight(_weight)
 	{
@@ -73,6 +91,13 @@ public:
 	FADER(const double dt) // dtでkが0->1に変化.
 	: k(0)
 	{
+		set(dt);
+	}
+	
+	void set(const double dt)
+	{
+		k = 0;
+		
 		if(0 < dt){
 			tan = 1.0/dt;
 			b_immediate = false;
@@ -112,7 +137,8 @@ private:
 	enum STATE{
 		STATE_ESCAPE,
 		STATE_WAIT,
-		STATE_RUN,
+		STATE_RUN__VOLSYNC,
+		STATE_RUN__PATTERN,
 		STATE_ECHO,
 		STATE_CALM,
 		
@@ -146,7 +172,7 @@ private:
 	static int NUM_COLOR_COMBINATIONS;
 	int* Weight_ColorCombination_id;
 	
-	int LedNumSync;
+	double LedNumSync;
 	
 	/********************
 	********************/
@@ -159,6 +185,7 @@ private:
 	STATE State;
 	
 	DESIGN_CATEGORY DesignCategory;
+	bool b_DesignPattern;
 	
 	int BlockGrouping_id;
 	int* Weight_BlockGrouping_id;
@@ -167,8 +194,7 @@ private:
 	FADER Fader_DesignLight;
 	FADER Fader_SafetyLight;
 	
-	FADER Fader_CalmColor;
-	LED_PARAM CalmColor_pre[NUM_COLOR_SURFACES];
+	LED_PARAM CalmColor_max[NUM_COLOR_SURFACES];
 	
 	float t_calm_From;
 	
@@ -194,13 +220,15 @@ private:
 	/********************
 	********************/
 	void fix_sync_maxColor(double vol, double Vol_Map_L, double Vol_Map_H);
-	void StateChart(double vol, double Vol_thresh_L, double Vol_thresh_H);
+	void StateChart(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_thresh_P);
 	int Dice_index(int *Weight, int NUM);
 	
 	void Transition__to_WAIT();
-	void Transition__to_RUN();
+	void Transition__to_RUN_VolSync();
+	void Transition__to_RUN_Pattern();
 	void Dice_DesignCategory();
 	void Dice_BlockGrouping_id();
+	void Dice_LogicalId(BLOCK* block);
 	void Dice_LedId_NumLeds_Sync();
 	void Dice_ColorCombination();
 	
@@ -209,6 +237,7 @@ private:
 	void update_SafetyLight();
 	void update_DesignLight(double vol, double Vol_Map_L, double Vol_Map_H);
 	void update_DesignLight_calm();
+	void update_DesignLight_wait();
 	void update_DesignLight_Run_Echo(double vol, double Vol_Map_L, double Vol_Map_H);
 	void update_DesignLight_Run_Echo__LevSync();
 	void update_DesignLight_Run_Echo__AllOn();
@@ -229,7 +258,7 @@ public:
 	
 	
 	void setup();
-	void update(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_Map_L, double Vol_Map_H);
+	void update(double vol, double Vol_thresh_L, double Vol_thresh_H,  double Vol_thresh_P, double Vol_Map_L, double Vol_Map_H);
 	void draw(int test_DesignLight_id, LED_PARAM& test_DesignLight_Color, int test_SafetyLight_id, LED_PARAM& test_SafetyLight_Color);
 	void exit();
 	

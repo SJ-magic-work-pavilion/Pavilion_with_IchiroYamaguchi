@@ -5,12 +5,15 @@
 /************************************************************
 param
 ************************************************************/
-static const double calmColor_DarkRatio = 0.01;
+// static const double calmColor_DarkRatio = 0.01;
+static const double calmColor_DarkRatio = 0.3;
 
 COLOR_COMBINATION_SET DESIGN_MANAGER::ColorCombination[] = {
 	/*
-	COLOR_COMBINATION_SET	(	1,
-								LED_PARAM(50, 0, 0), LED_PARAM(200, 0, 0), LED_PARAM(255, 100, 0), LED_PARAM(255, 120, 255), LED_PARAM(255, 255, 255),	// COLOR_FROM_RESTAURANT
+	COLOR_COMBINATION_SET	(	"Marriage to white",
+								1,
+								LED_PARAM(200, 100, 0), LED_PARAM(255, 0, 0), LED_PARAM(255, 255, 0), LED_PARAM(255, 255, 255), LED_PARAM(255, 255, 255),	// COLOR_FROM_RESTAURANT
+								LED_PARAM(0, 0, 100), LED_PARAM(0, 0, 255), LED_PARAM(0, 255, 255), LED_PARAM(255, 255, 255), LED_PARAM(255, 255, 255)		// COLOR_FROM_ENTRANCE
 							),
 	*/
 	COLOR_COMBINATION_SET	(	"Marriage to white",
@@ -59,10 +62,10 @@ int DESIGN_MANAGER::NUM_COLOR_COMBINATIONS = sizeof(ColorCombination)/sizeof(Col
 /******************************
 ******************************/
 int W_DesignCategory[] = {
-	1, // DESIGN__LEV_MIC_SYNC,
-	7, // DESIGN__PATTERN,
-	1, // DESIGN__ALL_ON,
-	1, // DESIGN__NUM_LEDS,
+	4, // DESIGN__LEV_MIC_SYNC,
+	1, // DESIGN__PATTERN,
+	4, // DESIGN__ALL_ON,
+	0, // DESIGN__NUM_LEDS,
 };
 
 
@@ -79,10 +82,10 @@ DESIGN_MANAGER::DESIGN_MANAGER()
 , b_StateChart(true)
 , State(STATE_ESCAPE)
 , DesignCategory(DESIGN__ALL_ON) // 一応
+, b_DesignPattern(false)
 , BlockGrouping_id(0)
 , Fader_DesignLight(4.0)
 , Fader_SafetyLight(2.0)
-, Fader_CalmColor(Fader_SafetyLight)
 , t_now(0)
 , t_LastINT(0)
 , dmx(DMX::getInstance())
@@ -168,7 +171,7 @@ void DESIGN_MANAGER::update_GuiParam(float _LPF_Direct_NumLeds_ThreshSec, float 
 
 /******************************
 ******************************/
-void DESIGN_MANAGER::update(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_Map_L, double Vol_Map_H)
+void DESIGN_MANAGER::update(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_thresh_P, double Vol_Map_L, double Vol_Map_H)
 {
 	/********************
 	********************/
@@ -176,19 +179,19 @@ void DESIGN_MANAGER::update(double vol, double Vol_thresh_L, double Vol_thresh_H
 	
 	/********************
 	********************/
-	LevSync		= ofMap(vol, Vol_Map_L, Vol_Map_H, 0.04, 1.0, true);
+	LevSync = ofMap(vol, Vol_Map_L, Vol_Map_H, 0.04, 1.0, true);
 	
 	fix_sync_maxColor(vol, Vol_Map_L, Vol_Map_H);
 	
-	double LedNumSync_Raw	= ofMap(vol, Vol_Map_L, Vol_Map_H, NUM_DESIGN_LEDS/3, NUM_DESIGN_LEDS, true);
-	LedNumSync = int( get_FilterOut(LedNumSync, LedNumSync_Raw, LPF_Direct_NumLeds_ThreshSec, t_now - t_LastINT) );
+	double LedNumSync_Raw	= ofMap(vol, Vol_Map_L, Vol_Map_H, 0, NUM_DESIGN_LEDS, true);
+	LedNumSync = get_FilterOut(LedNumSync, LedNumSync_Raw, LPF_Direct_NumLeds_ThreshSec, t_now - t_LastINT);
 #ifdef LOG_DIRECT_FILTER
-	if(DesignCategory == DESIGN__NUM_LEDS) fprintf(fp_debug, "%f,%f,%d\n", t_now, LedNumSync_Raw, LedNumSync);
+	if(DesignCategory == DESIGN__NUM_LEDS) fprintf(fp_debug, "%f,%f,%f\n", t_now, LedNumSync_Raw, LedNumSync);
 #endif
 	
 	/********************
 	********************/
-	StateChart(vol, Vol_thresh_L, Vol_thresh_H);
+	StateChart(vol, Vol_thresh_L, Vol_thresh_H, Vol_thresh_P);
 	
 	/********************
 	********************/
@@ -238,14 +241,18 @@ void DESIGN_MANAGER::update_DesignLight(double vol, double Vol_Map_L, double Vol
 			********************/
 			break;
 			
-		case STATE_CALM:
 		case STATE_WAIT:
-			update_DesignLight_calm();
+			update_DesignLight_wait();
 			break;
 			
-		case STATE_RUN:
+		case STATE_RUN__VOLSYNC:
+		case STATE_RUN__PATTERN:
 		case STATE_ECHO:
 			update_DesignLight_Run_Echo(vol, Vol_Map_L, Vol_Map_H);
+			break;
+			
+		case STATE_CALM:
+			update_DesignLight_calm();
 			break;
 			
 		default:
@@ -284,13 +291,26 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo(double vol, double Vol_Map_L, d
 void DESIGN_MANAGER::update_DesignLight_Run_Echo__LevSync()
 {
 	for(int i = 0; i < NUM_DESIGN_LEDS; i++){
+		/********************
+		********************/
 		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
 		
-		// LED_PARAM Color_calm = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm;
-		LED_PARAM Color_calm = CalmColor_pre[ColorSurface] * (1 - Fader_CalmColor.k) + ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm * Fader_CalmColor.k;
+		LED_PARAM Color_calm = CalmColor_max[ColorSurface];
 		LED_PARAM Dynamic = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_0 * LevSync;
 		
 		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k) + Dynamic * (Fader_DesignLight.k);
+		
+		/********************
+		********************/
+		int R = DesignLight[i].LedParam.get_R();
+		int G = DesignLight[i].LedParam.get_G();
+		int B = DesignLight[i].LedParam.get_B();
+		
+		if(0 < R) R = int(R + DesignLight[i].Noise_Run_LevSync.get_SignedNoise(t_now));
+		if(0 < G) G = int(G + DesignLight[i].Noise_Run_LevSync.get_SignedNoise(t_now));
+		if(0 < B) B = int(B + DesignLight[i].Noise_Run_LevSync.get_SignedNoise(t_now));
+		
+		DesignLight[i].LedParam = LED_PARAM(R, G, B);
 	}
 }
 
@@ -309,6 +329,20 @@ void DESIGN_MANAGER::calProgress(BLOCK& Block, double t_now, double Duration)
 		if(Bp[Block.Bp_Pattern_id].ShortPattern_Param[Block.Progress_id].pShortPattern == NULL){
 			Block.Progress_id = 0;
 		}
+		
+		Dice_LogicalId(&Block);
+		
+		if( Bp[Block.Bp_Pattern_id].BlankProbability == 0 ){
+			Block.b_Blank = false;
+		}else{
+			int RandomNumber = (int)( ((double)rand() / ((double)RAND_MAX + 1)) * (Bp[Block.Bp_Pattern_id].BlankProbability) );
+			
+			if(Bp[Block.Bp_Pattern_id].BlankProbability - 1 <= RandomNumber){
+				Block.b_Blank = true;
+			}else{
+				Block.b_Blank = false;
+			}
+		}
 	}
 }
 
@@ -320,8 +354,7 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 	********************/
 	for(int i = 0; i < NUM_DESIGN_LEDS; i++){
 		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
-		// LED_PARAM Color_calm = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm;
-		LED_PARAM Color_calm = CalmColor_pre[ColorSurface] * (1 - Fader_CalmColor.k) + ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm * Fader_CalmColor.k;
+		LED_PARAM Color_calm = CalmColor_max[ColorSurface];
 		
 		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k);
 	}
@@ -336,6 +369,14 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 		double Duration = ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].Duration_From, Bp[Bp_pattern_id].Duration_To, true);
 		calProgress(BlockGrouping[BlockGrouping_id].Block[i], t_now, Duration);
 		
+		int _NumLogicalChs;
+		if(BlockGrouping[BlockGrouping_id].Block[i].b_Blank){
+			_NumLogicalChs = 0;
+		}else{
+			if(Bp[Bp_pattern_id].b_ValidCh_VolSync)	_NumLogicalChs = ofMap(vol, Vol_Map_L, Vol_Map_H, 0, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, true);
+			else									_NumLogicalChs = Bp[Bp_pattern_id].NUM_LOGICAL_CHS;
+		}
+		
 		double NumWavesInSpace_Raw = ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].NumWaves_inSpace_From, Bp[Bp_pattern_id].NumWaves_inSpace_To, true);
 		NumWavesInSpace = get_FilterOut(NumWavesInSpace, NumWavesInSpace_Raw, LPF_Direct_NumWaves_ThreshSec, t_now - t_LastINT);
 		
@@ -347,11 +388,12 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 		
 		/********************
 		********************/
-		for(int j = 0; j < Bp[Bp_pattern_id].NUM_LOGICAL_CHS; j++){
+		for(int j = 0; j < _NumLogicalChs; j++){
 			/********************
 			********************/
 			double Progress = BlockGrouping[BlockGrouping_id].Block[i].Progress;
-			double Lev = Bp[Bp_pattern_id].ShortPattern_Param[Progress_id].pShortPattern(Progress, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, j, NumWavesInSpace);
+			int Nth = BlockGrouping[BlockGrouping_id].Block[i].LogicalId[j];
+			double Lev = Bp[Bp_pattern_id].ShortPattern_Param[Progress_id].pShortPattern(Progress, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, Nth, NumWavesInSpace);
 			
 			/********************
 			********************/
@@ -369,8 +411,8 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 			
 			/********************
 			********************/
-			for(int k = 0; k < BlockGrouping[BlockGrouping_id].Block[i].LogicalCh[j].size(); k++){
-				int Led_physical_id = BlockGrouping[BlockGrouping_id].Block[i].LogicalCh[j][k];
+			for(int k = 0; k < BlockGrouping[BlockGrouping_id].Block[i].LogicalCh[Nth].size(); k++){
+				int Led_physical_id = BlockGrouping[BlockGrouping_id].Block[i].LogicalCh[Nth][k];
 				
 				COLOR_SURFACE ColorSurface = DesignLight[Led_physical_id].ColorSurface;
 				DesignLight[Led_physical_id].LedParam += Dynamic[ColorSurface];
@@ -384,13 +426,26 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 void DESIGN_MANAGER::update_DesignLight_Run_Echo__AllOn()
 {
 	for(int i = 0; i < NUM_DESIGN_LEDS; i++){
+		/********************
+		********************/
 		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
 		
-		// LED_PARAM Color_calm = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm;
-		LED_PARAM Color_calm = CalmColor_pre[ColorSurface] * (1 - Fader_CalmColor.k) + ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm * Fader_CalmColor.k;
+		LED_PARAM Color_calm = CalmColor_max[ColorSurface];
 		LED_PARAM Dynamic = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].maxColor;
 		
 		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k) + Dynamic * (Fader_DesignLight.k);
+		
+		/********************
+		********************/
+		int R = DesignLight[i].LedParam.get_R();
+		int G = DesignLight[i].LedParam.get_G();
+		int B = DesignLight[i].LedParam.get_B();
+		
+		R = int(R + DesignLight[i].Noise_Run_ColSync.get_SignedNoise(t_now, 0 * 100));
+		G = int(G + DesignLight[i].Noise_Run_ColSync.get_SignedNoise(t_now, 1 * 100));
+		B = int(B + DesignLight[i].Noise_Run_ColSync.get_SignedNoise(t_now, 2 * 100));
+		
+		DesignLight[i].LedParam = LED_PARAM(R, G, B);
 	}
 }
 
@@ -400,13 +455,10 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__NumLeds()
 {
 	for(int i = 0; i < NUM_DESIGN_LEDS; i++){
 		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
-		LED_PARAM Color_calm = CalmColor_pre[ColorSurface] * (1 - Fader_CalmColor.k) + ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm * Fader_CalmColor.k;
-		
-		// DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k);
-		DesignLight[i].LedParam = Color_calm;
+		DesignLight[i].LedParam = ColorCombination[ColorCombination_id].Combination[i].Color_calm; // no fade.
 	}
 	
-	for(int i = 0; i < LedNumSync; i++){
+	for(int i = 0; i < int(LedNumSync); i++){
 		int LedId = LedId_ExchangeTable_NumSync[i];
 	
 		COLOR_SURFACE ColorSurface = DesignLight[LedId].ColorSurface;
@@ -422,7 +474,7 @@ void DESIGN_MANAGER::update_DesignLight_calm()
 {
 	for(int i = 0; i < NUM_DESIGN_LEDS; i++){
 		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
-		LED_PARAM LedParam = CalmColor_pre[ColorSurface] * (1 - Fader_CalmColor.k) + ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_calm * Fader_CalmColor.k;
+		LED_PARAM LedParam = CalmColor_max[ColorSurface] * Fader_DesignLight.k;
 		
 		DesignLight[i].LedParam = LedParam;
 	}
@@ -430,15 +482,39 @@ void DESIGN_MANAGER::update_DesignLight_calm()
 
 /******************************
 ******************************/
-void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thresh_H)
+void DESIGN_MANAGER::update_DesignLight_wait()
+{
+	for(int i = 0; i < NUM_DESIGN_LEDS; i++){
+		/********************
+		********************/
+		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
+		LED_PARAM LedParam = CalmColor_max[ColorSurface] * Fader_DesignLight.k;
+		
+		DesignLight[i].LedParam = LedParam;
+		
+		/********************
+		********************/
+		int R = DesignLight[i].LedParam.get_R();
+		int G = DesignLight[i].LedParam.get_G();
+		int B = DesignLight[i].LedParam.get_B();
+		
+		R = int(R + DesignLight[i].Noise_Calm.get_SignedNoise(t_now, 0 * 100));
+		G = int(G + DesignLight[i].Noise_Calm.get_SignedNoise(t_now, 1 * 100));
+		B = int(B + DesignLight[i].Noise_Calm.get_SignedNoise(t_now, 2 * 100));
+		
+		DesignLight[i].LedParam = LED_PARAM(R, G, B);
+	}
+}
+
+/******************************
+******************************/
+void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_thresh_P)
 {
 	enum SUB_STATE_RUN{
 		SUB_STATE_RUN__VOL_WITHIN_RANGE,
 		SUB_STATE_RUN__VOL_RANGE_OVER,
 	};
 	static SUB_STATE_RUN SubState_Run;
-	
-	Fader_CalmColor.update_Up(t_now - t_LastINT);
 	
 	switch(State){
 		case STATE_ESCAPE:
@@ -452,24 +528,27 @@ void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thre
 			
 		case STATE_WAIT:
 			Fader_SafetyLight.update_Up(t_now - t_LastINT);
+			Fader_DesignLight.update_Up(t_now - t_LastINT);
+			
 			if(Vol_thresh_H < vol){
-				State = STATE_RUN;
-				Transition__to_RUN();
+				State = STATE_RUN__VOLSYNC;
+				Transition__to_RUN_VolSync();
 				SubState_Run = SUB_STATE_RUN__VOL_WITHIN_RANGE; // 関数内staticなので、Transition__to_RUN()でなく、こちらで処理.
 			}
 			break;
 			
-		case STATE_RUN:
-		{
+		case STATE_RUN__VOLSYNC:
+			/********************
+			********************/
+			Fader_SafetyLight.update_Down(t_now - t_LastINT);
+			Fader_DesignLight.update_Up(t_now - t_LastINT);
+			
 			/********************
 			********************/
 			switch(SubState_Run){
 				case SUB_STATE_RUN__VOL_WITHIN_RANGE:
 					if(NUM_DESIGN_LEDS <= LedNumSync){
-						if(DesignCategory == DESIGN__NUM_LEDS){
-							Dice_LedId_NumLeds_Sync();
-						}
-						
+						if(DesignCategory == DESIGN__NUM_LEDS) { Dice_LedId_NumLeds_Sync(); }
 						SubState_Run = SUB_STATE_RUN__VOL_RANGE_OVER;
 					}
 					break;
@@ -483,14 +562,28 @@ void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thre
 			
 			/********************
 			********************/
+			if( (Vol_thresh_P < vol) && b_DesignPattern ){
+				State = STATE_RUN__PATTERN;
+				Transition__to_RUN_Pattern();
+				
+			}else if(vol < Vol_thresh_L){
+				State = STATE_ECHO;
+				for(int i = 0; i < NUM_COLOR_SURFACES; i++) { CalmColor_max[i] = LED_PARAM(0, 0, 0); }
+			}
+			break;
+			
+		case STATE_RUN__PATTERN:
+			/********************
+			********************/
 			Fader_SafetyLight.update_Down(t_now - t_LastINT);
 			Fader_DesignLight.update_Up(t_now - t_LastINT);
 			
-			
+			/********************
+			********************/
 			if(vol < Vol_thresh_L){
 				State = STATE_ECHO;
+				for(int i = 0; i < NUM_COLOR_SURFACES; i++) { CalmColor_max[i] = LED_PARAM(0, 0, 0); }
 			}
-		}
 			
 			break;
 			
@@ -499,7 +592,9 @@ void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thre
 			Fader_DesignLight.update_Down(t_now - t_LastINT);
 			
 			if(Vol_thresh_L < vol){
-				State = STATE_RUN;
+				if(DesignCategory == DESIGN__PATTERN)	{ State = STATE_RUN__PATTERN; }
+				else									{ State = STATE_RUN__VOLSYNC; }
+				
 			}else if(Fader_DesignLight.k <= 0){
 				State = STATE_CALM;
 				t_calm_From = t_now;
@@ -509,13 +604,19 @@ void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thre
 		case STATE_CALM:
 		{
 			Fader_SafetyLight.update_Down(t_now - t_LastINT);
+			// Fader_DesignLight: no touch.
 			
 			const double threshTime = 2.0;
 			
 			if(Vol_thresh_H < vol){
-				State = STATE_RUN;
-				Transition__to_RUN();
+				State = STATE_RUN__VOLSYNC;
+				Transition__to_RUN_VolSync();
+				if(b_DesignPattern){
+					DesignCategory = DESIGN__LEV_MIC_SYNC;
+				}
+				
 				SubState_Run = SUB_STATE_RUN__VOL_WITHIN_RANGE; // 関数内staticなので、Transition__to_RUN()でなく、こちらで処理.
+				
 			}else if(threshTime < t_now - t_calm_From){
 				State = STATE_WAIT;
 				Transition__to_WAIT();
@@ -534,20 +635,28 @@ void DESIGN_MANAGER::Transition__to_WAIT()
 {
 	/********************
 	********************/
+	b_DesignPattern = false;
+	
+	/********************
+	********************/
 	Dice_DesignCategory();
 	
 	if(DesignCategory == DESIGN__PATTERN){
 		Dice_BlockGrouping_id();
+		
+		/* 時間差 設定 */
+		b_DesignPattern = true;
+		DesignCategory = DESIGN__LEV_MIC_SYNC;
+		
 	}else if(DesignCategory == DESIGN__NUM_LEDS){
 		Dice_LedId_NumLeds_Sync();
 	}
 	
-	Fader_CalmColor.k = 0;
-	for(int i = 0; i < NUM_COLOR_SURFACES; i++){
-		CalmColor_pre[i] = ColorCombination[ColorCombination_id].Combination[i].Color_calm;
-	}
-	
 	Dice_ColorCombination();
+	for(int i = 0; i < NUM_COLOR_SURFACES; i++){
+		CalmColor_max[i] = ColorCombination[ColorCombination_id].Combination[i].Color_calm;
+	}
+	Fader_DesignLight.set(2.0);
 	
 	/********************
 	********************/
@@ -561,13 +670,57 @@ void DESIGN_MANAGER::Transition__to_WAIT()
 
 /******************************
 ******************************/
-void DESIGN_MANAGER::Transition__to_RUN()
+void DESIGN_MANAGER::Transition__to_RUN_VolSync()
 {
-	Fader_DesignLight.k = 0;
+	for(int i = 0; i < NUM_COLOR_SURFACES; i++){
+		CalmColor_max[i] = CalmColor_max[i] * Fader_DesignLight.k;
+	}
+	
+	Fader_DesignLight.set(0.5);
+}
+
+/******************************
+******************************/
+void DESIGN_MANAGER::Transition__to_RUN_Pattern()
+{
+	DesignCategory = DESIGN__PATTERN;
 	
 	for( int i = 0; !IsPeriodOfBlockGroup(BlockGrouping[BlockGrouping_id].Block[i]); i++ ){
 		BlockGrouping[BlockGrouping_id].Block[i].t_From = t_now;
 		BlockGrouping[BlockGrouping_id].Block[i].Progress = 0;
+		BlockGrouping[BlockGrouping_id].Block[i].b_Blank = false;
+		
+		Dice_LogicalId(&BlockGrouping[BlockGrouping_id].Block[i]);
+	}
+}
+
+/******************************
+description
+	fisher yates法
+	偏りをなくすため、回を追うごとに乱数範囲を狭めていくのがコツ
+	http://www.fumiononaka.com/TechNotes/Flash/FN0212003.html
+******************************/
+void DESIGN_MANAGER::Dice_LogicalId(BLOCK* block)
+{
+	/********************
+	********************/
+	for(int i = 0; i < MAX_LOGICAL_CHS; i++){
+		block->LogicalId[i] = i;
+	}
+	
+	/********************
+	********************/
+	if( Bp[block->Bp_Pattern_id].b_LogicalID_Random ){
+		int i = Bp[block->Bp_Pattern_id].NUM_LOGICAL_CHS;
+		
+		while(i--){
+			// int j = rand() % (i + 1);
+			int j = (int)( ((double)rand() / ((double)RAND_MAX + 1)) * (i + 1) );
+			
+			int temp = block->LogicalId[i];
+			block->LogicalId[i] = block->LogicalId[j];
+			block->LogicalId[j] = temp;
+		}
 	}
 }
 
@@ -722,9 +875,11 @@ void DESIGN_MANAGER::draw_Infos()
 		case STATE_WAIT:
 			sprintf(buf, "> STATE_WAIT\n");
 			break;
-		case STATE_RUN:
-			sprintf(buf, "> STATE_RUN\n");
-
+		case STATE_RUN__VOLSYNC:
+			sprintf(buf, "> STATE_RUN__VOLSYNC\n");
+			break;
+		case STATE_RUN__PATTERN:
+			sprintf(buf, "> STATE_RUN__PATTERN\n");
 			break;
 		case STATE_ECHO:
 			sprintf(buf, "> STATE_ECHO\n");
@@ -764,7 +919,11 @@ void DESIGN_MANAGER::draw_Infos()
 	********************/
 	switch(DesignCategory){
 		case DESIGN__LEV_MIC_SYNC:
-			sprintf(add_buf, "%-20s= DESIGN__LEV_MIC_SYNC\n", "DesignCategory");
+			if(b_DesignPattern){
+				sprintf(add_buf, "%-20s= DESIGN__LEV_MIC_SYNC (-> DESIGN__PATTERN : %s)\n", "DesignCategory", BlockGrouping[BlockGrouping_id].BlockName);
+			}else{
+				sprintf(add_buf, "%-20s= DESIGN__LEV_MIC_SYNC\n", "DesignCategory");
+			}
 			break;
 		case DESIGN__PATTERN:
 			sprintf(add_buf, "%-20s= DESIGN__PATTERN\n%-20s= %s\n", "DesignCategory", "BlockName", BlockGrouping[BlockGrouping_id].BlockName);
