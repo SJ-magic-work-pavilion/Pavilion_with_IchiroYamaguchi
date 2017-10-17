@@ -126,9 +126,10 @@ void ofApp::setup(){
 	gui.add(&GG_DirectFilter);
 	
 	GG_VolRange.setup("Vol Range");
-	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.045, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.06, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.045, 0, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.028, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.035, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_P.setup("thresh P", 0.09, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.028, 0, 0.5));
 	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.16, 0, 0.5));
 	/*
 	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.14, 0.01, 0.5));
@@ -195,7 +196,7 @@ void ofApp::update(){
 	********************/
 	if(IsEnable_LedManager()){
 		DesignManager.update_GuiParam(LPF_Direct_NumLeds_ThreshSec, LPF_Direct_NumWaves_ThreshSec);
-		DesignManager.update(Latest_RawVal, gui_Vol_thresh_L, gui_Vol_thresh_H, gui_Vol_Map_L, gui_Vol_Map_H);
+		DesignManager.update(Latest_RawVal, gui_Vol_thresh_L, gui_Vol_thresh_H, gui_Vol_thresh_P, gui_Vol_Map_L, gui_Vol_Map_H);
 	}
 }
 
@@ -203,6 +204,7 @@ void ofApp::update(){
 ******************************/
 void ofApp::draw_VolThresh()
 {
+	/* */
 	int y_threshL = ofMap(gui_Vol_thresh_L, 0, Monitor_v_max, 0, HEIGHT - MARGIN);
 	int y_threshH = ofMap(gui_Vol_thresh_H, 0, Monitor_v_max, 0, HEIGHT - MARGIN);
 	
@@ -211,6 +213,15 @@ void ofApp::draw_VolThresh()
 	else						ofSetColor(255, 0, 0, 80);
 	
 	ofDrawRectangle(0, y_threshL, WIDTH, y_threshH - y_threshL);
+	
+	/* */
+	int y_threshP = ofMap(gui_Vol_thresh_P, 0, Monitor_v_max, 0, HEIGHT - MARGIN);
+	
+	ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+	if(y_threshH < y_threshP)	ofSetColor(0, 255, 255, 20);
+	else						ofSetColor(255, 0, 0, 80);
+	
+	ofDrawRectangle(0, y_threshH, WIDTH, y_threshP - y_threshH);
 }
 
 /******************************

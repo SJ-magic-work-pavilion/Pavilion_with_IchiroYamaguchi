@@ -47,6 +47,29 @@ public:
 	}
 };
 
+class NOISE_PARAM{
+private:
+	const double Amp;
+	const double Freq_sec;
+	const double ofs_sec;
+	
+public:
+	NOISE_PARAM(double _Amp, double Freq_min, double Freq_max, double ofs_min, double ofs_max)
+	: Freq_sec(ofRandom(Freq_min, Freq_max))
+	, ofs_sec(ofRandom(ofs_min, ofs_max))
+	, Amp(_Amp)
+	{
+	}
+	
+	double get_SignedNoise(double t){
+		return Amp * ofSignedNoise(t * Freq_sec + ofs_sec);
+	}
+	
+	double get_SignedNoise(double t, double param1){
+		return Amp * ofSignedNoise(t * Freq_sec + ofs_sec, param1);
+	}
+};
+
 struct LED_LIGHT{
 	const int ODE_id;
 	const int AddressFrom;
@@ -55,10 +78,15 @@ struct LED_LIGHT{
 	
 	LED_SIMULATION LedSimulation;
 	
+	NOISE_PARAM Noise_Run_LevSync;
+	NOISE_PARAM Noise_Run_ColSync;
+	NOISE_PARAM Noise_Calm;
+	
 	LED_PARAM LedParam;
 	
 	LED_LIGHT(int _ODE_id, int _AddressFrom, enum LED_DEVICE_TYPE _LedDeviceType, COLOR_SURFACE _ColorSurface, bool _b_Simulate = false, ofPoint _pos = ofPoint(0, 0, 0), int _radius = 1)
 	: ODE_id(_ODE_id), AddressFrom(_AddressFrom), LedDeviceType(_LedDeviceType), ColorSurface(_ColorSurface), LedSimulation(_b_Simulate, _pos, _radius, &LedParam)
+	, Noise_Run_LevSync(50, 0.1, 2.0, 0, 1000), Noise_Run_ColSync(50, 0.1, 2.0, 0, 1000), Noise_Calm(10, 0.1, 2.0, 0, 1000)
 	{
 	}
 };

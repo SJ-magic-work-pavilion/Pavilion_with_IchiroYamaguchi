@@ -22,9 +22,9 @@ public:
 	static double Sp_FlowOff(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE);
 	static double Sp_cos(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE);
 	static double Sp_On_High(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE);
+	static double Sp_Flash__1_1(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE);
 	static double Sp_Flash__1_2(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE);
 	static double Sp_Flash__2_2(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE);
-	
 };
 
 

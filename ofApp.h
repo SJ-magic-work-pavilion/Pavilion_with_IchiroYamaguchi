@@ -44,6 +44,7 @@ private:
 	ofxGuiGroup GG_VolRange;
 	ofxFloatSlider gui_Vol_thresh_L;
 	ofxFloatSlider gui_Vol_thresh_H;
+	ofxFloatSlider gui_Vol_thresh_P;
 	ofxFloatSlider gui_Vol_Map_L;
 	ofxFloatSlider gui_Vol_Map_H;
 	

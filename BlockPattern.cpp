@@ -20,6 +20,9 @@ const struct BLOCK_PATTERN Bp[] = {
 		12	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
+		false	, // b_LogicalID_Random		
+		false	, // b_ValidCh_VolSync		
+		0	, // BlankProbability		
 		{	//		
 			{	SHORT_PATTERN::Sp_FlowOn	},
 			{	SHORT_PATTERN::Sp_FlowOff	},
@@ -32,6 +35,9 @@ const struct BLOCK_PATTERN Bp[] = {
 		6	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
+		false	, // b_LogicalID_Random		
+		false	, // b_ValidCh_VolSync		
+		0	, // BlankProbability		
 		{	//		
 			{	SHORT_PATTERN::Sp_FlowOn	},
 			{	SHORT_PATTERN::Sp_FlowOff	},
@@ -44,6 +50,9 @@ const struct BLOCK_PATTERN Bp[] = {
 		12	, // Num Logical chs		
 		0.5	, // num waves from		
 		2	, // to		
+		false	, // b_LogicalID_Random		
+		false	, // b_ValidCh_VolSync		
+		0	, // BlankProbability		
 		{	//		
 			{	SHORT_PATTERN::Sp_cos	},
 			{	NULL	},
@@ -55,8 +64,25 @@ const struct BLOCK_PATTERN Bp[] = {
 		6	, // Num Logical chs		
 		0.25	, // num waves from		
 		1	, // to		
+		false	, // b_LogicalID_Random		
+		false	, // b_ValidCh_VolSync		
+		0	, // BlankProbability		
 		{	//		
 			{	SHORT_PATTERN::Sp_cos	},
+			{	NULL	},
+		},			
+	},				
+	{	"STROBE_24",			
+		0.2	, // Duration from[sec]		
+		0.06	, // to		
+		24	, // Num Logical chs		
+		0	, // num waves from		
+		0	, // to		
+		true	, // b_LogicalID_Random		
+		true	, // b_ValidCh_VolSync		
+		5	, // BlankProbability		
+		{	//		
+			{	SHORT_PATTERN::Sp_Flash__1_1	},
 			{	NULL	},
 		},			
 	},				
@@ -66,6 +92,9 @@ const struct BLOCK_PATTERN Bp[] = {
 		2	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
+		false	, // b_LogicalID_Random		
+		false	, // b_ValidCh_VolSync		
+		0	, // BlankProbability		
 		{	//		
 			{	SHORT_PATTERN::Sp_Flash__1_2	},
 			{	NULL	},
@@ -77,6 +106,9 @@ const struct BLOCK_PATTERN Bp[] = {
 		2	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
+		false	, // b_LogicalID_Random		
+		false	, // b_ValidCh_VolSync		
+		0	, // BlankProbability		
 		{	//		
 			{	SHORT_PATTERN::Sp_Flash__1_2	},
 			{	SHORT_PATTERN::Sp_Flash__1_2	},
@@ -95,6 +127,9 @@ const struct BLOCK_PATTERN Bp[] = {
 		1	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
+		false	, // b_LogicalID_Random		
+		false	, // b_ValidCh_VolSync		
+		0	, // BlankProbability		
 		{	//		
 			{	SHORT_PATTERN::Sp_On_High	},
 			{	NULL	},

@@ -13,16 +13,22 @@ enum{
 };
 
 struct BLOCK{
+	/* */
 	vector<int> LogicalCh[MAX_LOGICAL_CHS];
 	
 	const BP_PATTERN_ID Bp_Pattern_id;
 	const bool b_ColorSync;
 	
+	int LogicalId[MAX_LOGICAL_CHS];
+	
+	/* */
 	int Progress_id;
 	float t_From;
 	double Progress;
 	
 	double NumWavesInSpace;
+	
+	bool b_Blank;
 };
 
 struct BLOCK_GROUP{

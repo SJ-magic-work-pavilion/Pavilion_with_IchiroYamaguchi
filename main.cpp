@@ -86,6 +86,9 @@ int main( int argc, char** argv ){
 	
 	printf("\t%2d:%-30s", id++, "STROBE_6");
 	printf("\t%2d:%-30s\n", id++, "STROBE_12");
+	
+	printf("\t%2d:%-30s", id++, "CAM_STROBE");
+	printf("\n");
 	printf("\n");
 	
 	/********************
