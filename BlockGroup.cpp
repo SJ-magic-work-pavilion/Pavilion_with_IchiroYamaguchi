@@ -845,7 +845,7 @@ BLOCK_GROUP BlockGrouping[] = {
 			},				
 		},					
 	},						
-	{	"CAM_STROBE"	,				
+	{	"CAM_STROBE_COLOR_SYNC"	,				
 		1	,	// weight			
 		{ // Block					
 			{// Block[0]				
@@ -877,6 +877,46 @@ BLOCK_GROUP BlockGrouping[] = {
 				},			
 				BP_STROBE_24	,	// Bp_Pattern_id	
 				true	,	// b_ColorSync	
+			},				
+			{// period				
+				{// LogicalCh[]			
+				},			
+				BP_PERIOD	,	// Bp_Pattern_id	
+			},				
+		},					
+	},						
+	{	"CAM_STROBE_SINGLE_COLOR"	,				
+		1	,	// weight			
+		{ // Block					
+			{// Block[0]				
+				{// LogicalCh[]			
+					{	0,	},
+					{	1,	},
+					{	2,	},
+					{	3,	},
+					{	4,	},
+					{	5,	},
+					{	6,	},
+					{	7,	},
+					{	8,	},
+					{	9,	},
+					{	10,	},
+					{	11,	},
+					{	12,	},
+					{	13,	},
+					{	14,	},
+					{	15,	},
+					{	16,	},
+					{	17,	},
+					{	18,	},
+					{	19,	},
+					{	20,	},
+					{	21,	},
+					{	22,	},
+					{	23,	},
+				},			
+				BP_STROBE_24	,	// Bp_Pattern_id	
+				false	,	// b_ColorSync	
 			},				
 			{// period				
 				{// LogicalCh[]			

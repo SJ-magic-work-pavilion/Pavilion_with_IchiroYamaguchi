@@ -128,7 +128,8 @@ void ofApp::setup(){
 	GG_VolRange.setup("Vol Range");
 	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.028, 0.01, 0.5));
 	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.035, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_thresh_P.setup("thresh P", 0.09, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_P_L.setup("thresh_P L", 0.07, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_P_H.setup("thresh_P H", 0.1, 0.01, 0.5));
 	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.028, 0, 0.5));
 	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.16, 0, 0.5));
 	/*
@@ -196,7 +197,7 @@ void ofApp::update(){
 	********************/
 	if(IsEnable_LedManager()){
 		DesignManager.update_GuiParam(LPF_Direct_NumLeds_ThreshSec, LPF_Direct_NumWaves_ThreshSec);
-		DesignManager.update(Latest_RawVal, gui_Vol_thresh_L, gui_Vol_thresh_H, gui_Vol_thresh_P, gui_Vol_Map_L, gui_Vol_Map_H);
+		DesignManager.update(Latest_RawVal, gui_Vol_thresh_L, gui_Vol_thresh_H, gui_Vol_thresh_P_L, gui_Vol_thresh_P_H, gui_Vol_Map_L, gui_Vol_Map_H);
 	}
 }
 
@@ -209,19 +210,20 @@ void ofApp::draw_VolThresh()
 	int y_threshH = ofMap(gui_Vol_thresh_H, 0, Monitor_v_max, 0, HEIGHT - MARGIN);
 	
 	ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-	if(y_threshL < y_threshH)	ofSetColor(0, 0, 255, 80);
+	if(y_threshL < y_threshH)	ofSetColor(0, 0, 255, 60);
 	else						ofSetColor(255, 0, 0, 80);
 	
 	ofDrawRectangle(0, y_threshL, WIDTH, y_threshH - y_threshL);
 	
 	/* */
-	int y_threshP = ofMap(gui_Vol_thresh_P, 0, Monitor_v_max, 0, HEIGHT - MARGIN);
+	int y_threshPL = ofMap(gui_Vol_thresh_P_L, 0, Monitor_v_max, 0, HEIGHT - MARGIN);
+	int y_threshPH = ofMap(gui_Vol_thresh_P_H, 0, Monitor_v_max, 0, HEIGHT - MARGIN);
 	
 	ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-	if(y_threshH < y_threshP)	ofSetColor(0, 255, 255, 20);
+	if(y_threshPL < y_threshPH)	ofSetColor(0, 0, 255, 60);
 	else						ofSetColor(255, 0, 0, 80);
 	
-	ofDrawRectangle(0, y_threshH, WIDTH, y_threshP - y_threshH);
+	ofDrawRectangle(0, y_threshPL, WIDTH, y_threshPH - y_threshPL);
 }
 
 /******************************

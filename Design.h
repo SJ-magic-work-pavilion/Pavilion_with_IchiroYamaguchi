@@ -91,12 +91,12 @@ public:
 	FADER(const double dt) // dtでkが0->1に変化.
 	: k(0)
 	{
-		set(dt);
+		set(dt, true);
 	}
 	
-	void set(const double dt)
+	void set(const double dt, bool b_clear)
 	{
-		k = 0;
+		if(b_clear) k = 0;
 		
 		if(0 < dt){
 			tan = 1.0/dt;
@@ -144,6 +144,10 @@ private:
 		
 		NUM__STATES,
 	};
+	enum SUB_STATE_RUN_PATTERN{
+		SUB_STATE_RUN_PATTERN__FADE_UP,
+		SUB_STATE_RUN_PATTERN__FADE_DOWN,
+	};
 	
 	enum DESIGN_CATEGORY{
 		DESIGN__LEV_MIC_SYNC,
@@ -183,6 +187,7 @@ private:
 	********************/
 	bool b_StateChart;
 	STATE State;
+	SUB_STATE_RUN_PATTERN SubState_RunPattern;
 	
 	DESIGN_CATEGORY DesignCategory;
 	bool b_DesignPattern;
@@ -197,6 +202,7 @@ private:
 	LED_PARAM CalmColor_max[NUM_COLOR_SURFACES];
 	
 	float t_calm_From;
+	float t_Pattern_From;
 	
 	float t_now;
 	float t_LastINT;
@@ -220,7 +226,7 @@ private:
 	/********************
 	********************/
 	void fix_sync_maxColor(double vol, double Vol_Map_L, double Vol_Map_H);
-	void StateChart(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_thresh_P);
+	void StateChart(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_thresh_P_L, double Vol_thresh_P_H);
 	int Dice_index(int *Weight, int NUM);
 	
 	void Transition__to_WAIT();
@@ -258,7 +264,7 @@ public:
 	
 	
 	void setup();
-	void update(double vol, double Vol_thresh_L, double Vol_thresh_H,  double Vol_thresh_P, double Vol_Map_L, double Vol_Map_H);
+	void update(double vol, double Vol_thresh_L, double Vol_thresh_H, double Vol_thresh_P_L, double Vol_thresh_P_H, double Vol_Map_L, double Vol_Map_H);
 	void draw(int test_DesignLight_id, LED_PARAM& test_DesignLight_Color, int test_SafetyLight_id, LED_PARAM& test_SafetyLight_Color);
 	void exit();
 	

@@ -10,6 +10,8 @@ static FUNC_SP pFunc[] = {
 	SHORT_PATTERN::Sp_FlowOn,
 	SHORT_PATTERN::Sp_FlowOff,
 	SHORT_PATTERN::Sp_cos,
+	SHORT_PATTERN::Sp_On_High,
+	SHORT_PATTERN::Sp_Flash__1_1,
 	SHORT_PATTERN::Sp_Flash__1_2,
 	SHORT_PATTERN::Sp_Flash__2_2,
 };
