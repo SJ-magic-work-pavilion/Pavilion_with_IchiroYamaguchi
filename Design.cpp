@@ -109,9 +109,9 @@ int DESIGN_MANAGER::NUM_COLOR_COMBINATIONS = sizeof(ColorCombination)/sizeof(Col
 /******************************
 ******************************/
 int W_DesignCategory[] = {
-	3, // DESIGN__LEV_MIC_SYNC,
+	2, // DESIGN__LEV_MIC_SYNC,
 	1, // DESIGN__PATTERN,
-	3, // DESIGN__ALL_ON,
+	2, // DESIGN__ALL_ON,
 	0, // DESIGN__NUM_LEDS,
 };
 
@@ -144,7 +144,7 @@ DESIGN_MANAGER::DESIGN_MANAGER()
 #ifdef LOG_DIRECT_FILTER
 	fp_debug = fopen("../../../data/debug.csv", "w");
 #endif
-	
+
 	/********************
 	********************/
 	Weight_ColorCombination_id = new int[NUM_COLOR_COMBINATIONS];
@@ -438,7 +438,7 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 			_NumLogicalChs = 0;
 		}else{
 			// if(Bp[Bp_pattern_id].b_ValidCh_VolSync)	_NumLogicalChs = int( ofMap(vol, Vol_Map_L, Vol_Map_H, 0, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, true) );
-			if(Bp[Bp_pattern_id].b_ValidCh_VolSync)	_NumLogicalChs = int( ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].NUM_LOGICAL_CHS / 5, Bp[Bp_pattern_id].NUM_LOGICAL_CHS * 0.8, true) );
+			if(Bp[Bp_pattern_id].b_ValidCh_VolSync)	_NumLogicalChs = int( ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].NUM_LOGICAL_CHS / 5, Bp[Bp_pattern_id].NUM_LOGICAL_CHS * 0.7, true) );
 			else									_NumLogicalChs = Bp[Bp_pattern_id].NUM_LOGICAL_CHS;
 		}
 		
@@ -461,7 +461,8 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 			else					{ Progress = 100; } // Block[]内のProgressは進んでいくが、pShortPattern()に渡すProgressは、100%で止まり、Blank明けを待つ.
 
 			int Nth = BlockGrouping[BlockGrouping_id].Block[i].LogicalId[j];
-			double Lev = Bp[Bp_pattern_id].ShortPattern_Param[Progress_id].pShortPattern(Progress, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, Nth, NumWavesInSpace);
+			// double Lev = Bp[Bp_pattern_id].ShortPattern_Param[Progress_id].pShortPattern(Progress, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, Nth, NumWavesInSpace);
+			double Lev = Bp[Bp_pattern_id].ShortPattern_Param[Progress_id].pShortPattern(Progress, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, j, NumWavesInSpace);
 			
 			/********************
 			********************/
@@ -675,7 +676,7 @@ void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thre
 			
 			/********************
 			********************/
-			const double threshTime = 10.0;
+			const double threshTime = 15.0;
 			
 			if(vol < Vol_thresh_L){
 				State = STATE_ECHO;

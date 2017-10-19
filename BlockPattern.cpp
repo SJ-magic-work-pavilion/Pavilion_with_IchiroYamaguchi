@@ -73,8 +73,8 @@ const struct BLOCK_PATTERN Bp[] = {
 		},			
 	},				
 	{	"STROBE_24",			
-		0.15	, // Duration from[sec]		
-		0.06	, // to		
+		0.2	, // Duration from[sec]		
+		0.1	, // to		
 		24	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
@@ -82,7 +82,8 @@ const struct BLOCK_PATTERN Bp[] = {
 		true	, // b_ValidCh_VolSync		
 		5	, // BlankProbability		
 		{	//		
-			{	SHORT_PATTERN::Sp_Flash__1_1	},
+		//	{	SHORT_PATTERN::Sp_Flash__1_1	},
+			{	SHORT_PATTERN::Sp_cos_forFlash	},
 			{	NULL	},
 		},			
 	},				

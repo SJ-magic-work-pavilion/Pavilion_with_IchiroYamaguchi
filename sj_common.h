@@ -155,3 +155,6 @@ bool IsEnable_PlayReced();
 extern BOOT_MODE BootMode;
 extern int argin_DesignCategory;
 extern int argin_BlockGrouping_id;
+
+
+

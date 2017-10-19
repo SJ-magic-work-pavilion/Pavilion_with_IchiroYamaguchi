@@ -11,6 +11,7 @@ static FUNC_SP pFunc[] = {
 	SHORT_PATTERN::Sp_FlowOff,
 	SHORT_PATTERN::Sp_cos,
 	SHORT_PATTERN::Sp_On_High,
+	SHORT_PATTERN::Sp_cos_forFlash,
 	SHORT_PATTERN::Sp_Flash__1_1,
 	SHORT_PATTERN::Sp_Flash__1_2,
 	SHORT_PATTERN::Sp_Flash__2_2,
@@ -129,6 +130,32 @@ double SHORT_PATTERN::Sp_On_High(const double Progress, const int NUM_CHS, const
 	/********************
 	********************/
 	return 1;
+}
+
+/******************************
+******************************/
+double SHORT_PATTERN::Sp_cos_forFlash(const double Progress, const int NUM_CHS, const int N, const double NUM_WAVES_IN_SPACE)
+{
+	/********************
+	********************/
+	if(NUM_CHS <= N) { ERROR_MSG(); std::exit(1); }
+	
+	/********************
+	********************/
+	// const double PI = 3.14159265398979;
+	const double diff = 20;
+	double ofs = diff / NUM_CHS * N;
+	
+	double Amp = (1 - Lev_Flash_L) / 2;
+	double center = Lev_Flash_L + Amp;
+	
+	if(Progress < ofs){
+		return Lev_Flash_L;
+	}else if(100 - diff + ofs < Progress){
+		return Lev_Flash_L;
+	}else{
+		return center + Amp * cos( 2 * PI * (Progress - ofs) / (2 * (100 - diff)) );
+	}
 }
 
 /******************************
