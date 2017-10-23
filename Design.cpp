@@ -10,17 +10,18 @@ param
 ********************/
 static const LED_PARAM BoostColorForSmoothAnimation(2, 2, 2);
 
+
 /********************
 Animationのsmoothさ確保のため、全体をboostしている。
 この時に、色味をきちんと確認できるLevelは、
 	(15, 2, 2)
 ********************/
-// static const double calmColor_DarkRatio = 0.06;
-static const double calmColor_DarkRatio = 0.1;
-static const LED_PARAM JobitoColor(15, 3, 0);
+static const double calmColor_DarkRatio = 0;
+static const LED_PARAM JobitoColor(5, 0, 0);
+
 
 COLOR_COMBINATION_SET DESIGN_MANAGER::ColorCombination[] = {
-	/*
+	//*
 	COLOR_COMBINATION_SET	(	"Marriage to white",
 								1,
 								JobitoColor, LED_PARAM(255, 0, 0), LED_PARAM(255, 255, 0), LED_PARAM(255, 255, 255), LED_PARAM(255, 255, 255),	// COLOR_FROM_RESTAURANT
@@ -109,9 +110,9 @@ int DESIGN_MANAGER::NUM_COLOR_COMBINATIONS = sizeof(ColorCombination)/sizeof(Col
 /******************************
 ******************************/
 int W_DesignCategory[] = {
-	2, // DESIGN__LEV_MIC_SYNC,
-	1, // DESIGN__PATTERN,
-	2, // DESIGN__ALL_ON,
+	3, // DESIGN__LEV_MIC_SYNC,
+	5, // DESIGN__PATTERN,
+	3, // DESIGN__ALL_ON,
 	0, // DESIGN__NUM_LEDS,
 };
 
@@ -353,28 +354,30 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__LevSync()
 		LED_PARAM Color_calm = CalmColor_max[ColorSurface];
 		LED_PARAM Dynamic = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].Color_0 * LevSync;
 		
-		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k) + Dynamic * (Fader_DesignLight.k);
-		
 		/********************
 		********************/
-		int R = DesignLight[i].LedParam.get_R();
-		int G = DesignLight[i].LedParam.get_G();
-		int B = DesignLight[i].LedParam.get_B();
+		int R = Dynamic.get_R();
+		int G = Dynamic.get_G();
+		int B = Dynamic.get_B();
 		
 		if(0 < R){
-			R = int(R + DesignLight[i].Noise_Run_LevSync.get_SignedNoise(t_now));
+			R = int(R + DesignLight[i].Noise_Run_LevSync.get_SignedNoise_Fade(Fader_DesignLight.k, t_now));
 			if(R <= 0) R = 1;
 		}
 		if(0 < G){
-			G = int(G + DesignLight[i].Noise_Run_LevSync.get_SignedNoise(t_now));
+			G = int(G + DesignLight[i].Noise_Run_LevSync.get_SignedNoise_Fade(Fader_DesignLight.k, t_now));
 			if(G <= 0) G = 1;
 		}
 		if(0 < B){
-			B = int(B + DesignLight[i].Noise_Run_LevSync.get_SignedNoise(t_now));
+			B = int(B + DesignLight[i].Noise_Run_LevSync.get_SignedNoise_Fade(Fader_DesignLight.k, t_now));
 			if(B <= 0) B = 1; 
 		}
 		
-		DesignLight[i].LedParam = LED_PARAM(R, G, B);
+		Dynamic = LED_PARAM(R, G, B);
+		
+		/********************
+		********************/
+		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k) + Dynamic * (Fader_DesignLight.k);
 	}
 }
 
@@ -437,8 +440,7 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 		if(BlockGrouping[BlockGrouping_id].Block[i].b_Blank){
 			_NumLogicalChs = 0;
 		}else{
-			// if(Bp[Bp_pattern_id].b_ValidCh_VolSync)	_NumLogicalChs = int( ofMap(vol, Vol_Map_L, Vol_Map_H, 0, Bp[Bp_pattern_id].NUM_LOGICAL_CHS, true) );
-			if(Bp[Bp_pattern_id].b_ValidCh_VolSync)	_NumLogicalChs = int( ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].NUM_LOGICAL_CHS / 5, Bp[Bp_pattern_id].NUM_LOGICAL_CHS * 0.7, true) );
+			if(Bp[Bp_pattern_id].b_ValidCh_VolSync)	_NumLogicalChs = int( ofMap(vol, Vol_Map_L, Vol_Map_H, Bp[Bp_pattern_id].NUM_LOGICAL_CHS / 5, Bp[Bp_pattern_id].NUM_LOGICAL_CHS * 0.8, true) );
 			else									_NumLogicalChs = Bp[Bp_pattern_id].NUM_LOGICAL_CHS;
 		}
 		
@@ -502,28 +504,30 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__AllOn()
 		LED_PARAM Color_calm = CalmColor_max[ColorSurface];
 		LED_PARAM Dynamic = ColorCombination[ColorCombination_id].Combination[ ColorSurface ].maxColor;
 		
-		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k) + Dynamic * (Fader_DesignLight.k);
-		
 		/********************
 		********************/
-		int R = DesignLight[i].LedParam.get_R();
-		int G = DesignLight[i].LedParam.get_G();
-		int B = DesignLight[i].LedParam.get_B();
+		int R = Dynamic.get_R();
+		int G = Dynamic.get_G();
+		int B = Dynamic.get_B();
 		
 		if(0 < R){
-			R = int(R + DesignLight[i].Noise_Run_ColSync.get_SignedNoise(t_now, 0 * 100));
+			R = int(R + DesignLight[i].Noise_Run_LevSync.get_SignedNoise_Fade(Fader_DesignLight.k, t_now, 0 * 100));
 			if(R <= 0) R = 1;
 		}
 		if(0 < G){
-			G = int(G + DesignLight[i].Noise_Run_ColSync.get_SignedNoise(t_now, 1 * 100));
+			G = int(G + DesignLight[i].Noise_Run_LevSync.get_SignedNoise_Fade(Fader_DesignLight.k, t_now, 1 * 100));
 			if(G <= 0) G = 1;
 		}
 		if(0 < B){
-			B = int(B + DesignLight[i].Noise_Run_ColSync.get_SignedNoise(t_now, 2 * 100));
-			if(B <= 0) B = 1;
+			B = int(B + DesignLight[i].Noise_Run_LevSync.get_SignedNoise_Fade(Fader_DesignLight.k, t_now, 2 * 100));
+			if(B <= 0) B = 1; 
 		}
 		
-		DesignLight[i].LedParam = LED_PARAM(R, G, B);
+		Dynamic = LED_PARAM(R, G, B);
+		
+		/********************
+		********************/
+		DesignLight[i].LedParam = Color_calm * (1 - Fader_DesignLight.k) + Dynamic * (Fader_DesignLight.k);
 	}
 }
 
@@ -566,15 +570,10 @@ void DESIGN_MANAGER::update_DesignLight_wait()
 		/********************
 		********************/
 		COLOR_SURFACE ColorSurface = DesignLight[i].ColorSurface;
-		LED_PARAM LedParam = CalmColor_max[ColorSurface] * Fader_DesignLight.k;
 		
-		DesignLight[i].LedParam = LedParam;
-		
-		/********************
-		********************/
-		int R = DesignLight[i].LedParam.get_R();
-		int G = DesignLight[i].LedParam.get_G();
-		int B = DesignLight[i].LedParam.get_B();
+		int R = CalmColor_max[ColorSurface].get_R();
+		int G = CalmColor_max[ColorSurface].get_G();
+		int B = CalmColor_max[ColorSurface].get_B();
 		
 		if(0 < R){
 			R = int(R + DesignLight[i].Noise_Calm.get_Noise(t_now));
@@ -588,13 +587,8 @@ void DESIGN_MANAGER::update_DesignLight_wait()
 			B = int(B + DesignLight[i].Noise_Calm.get_Noise(t_now));
 			if(B <= 0) B = 1;
 		}
-		/*
-		R = int(R + DesignLight[i].Noise_Calm.get_SignedNoise(t_now, 0 * 100));
-		G = int(G + DesignLight[i].Noise_Calm.get_SignedNoise(t_now, 1 * 100));
-		B = int(B + DesignLight[i].Noise_Calm.get_SignedNoise(t_now, 2 * 100));
-		*/
 		
-		DesignLight[i].LedParam = LED_PARAM(R, G, B);
+		DesignLight[i].LedParam = LED_PARAM(R, G, B) * Fader_DesignLight.k;
 	}
 }
 
@@ -661,7 +655,7 @@ void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thre
 			}else if(vol < Vol_thresh_L){
 				State = STATE_ECHO;
 				for(int i = 0; i < NUM_COLOR_SURFACES; i++) { CalmColor_max[i] = LED_PARAM(0, 0, 0); }
-				Fader_DesignLight.set(1.0, false);
+				Fader_DesignLight.set(5.0, false);
 			}
 			break;
 			
@@ -676,12 +670,12 @@ void DESIGN_MANAGER::StateChart(double vol, double Vol_thresh_L, double Vol_thre
 			
 			/********************
 			********************/
-			const double threshTime = 15.0;
+			const double threshTime = 20.0;
 			
 			if(vol < Vol_thresh_L){
 				State = STATE_ECHO;
 				for(int i = 0; i < NUM_COLOR_SURFACES; i++) { CalmColor_max[i] = LED_PARAM(0, 0, 0); }
-				Fader_DesignLight.set(1.0, false);
+				Fader_DesignLight.set(5.0, false);
 				
 			}else if(Fader_DesignLight.k <= 0){
 				State = STATE_RUN__VOLSYNC;

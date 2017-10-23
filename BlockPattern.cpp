@@ -74,7 +74,7 @@ const struct BLOCK_PATTERN Bp[] = {
 	},				
 	{	"STROBE_24",			
 		0.2	, // Duration from[sec]		
-		0.1	, // to		
+		0.08	, // to		
 		24	, // Num Logical chs		
 		0	, // num waves from		
 		0	, // to		
