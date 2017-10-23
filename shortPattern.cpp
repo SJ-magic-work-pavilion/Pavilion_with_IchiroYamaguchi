@@ -20,7 +20,7 @@ static const int Num_ShortPatterns = sizeof(pFunc) / sizeof(pFunc[0]);
 
 
 const double SHORT_PATTERN::Lev_Flow_L = 0.02;
-const double SHORT_PATTERN::Lev_Flash_L = 0.03;
+const double SHORT_PATTERN::Lev_Flash_L = 0.01;
 
 /************************************************************
 ************************************************************/

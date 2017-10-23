@@ -50,6 +50,8 @@ public:
 class NOISE_PARAM{
 private:
 	const double Amp;
+	const double Amp_min;
+	
 	const double Freq_sec;
 	const double ofs_sec;
 	
@@ -58,23 +60,40 @@ public:
 	: Freq_sec(ofRandom(Freq_min, Freq_max))
 	, ofs_sec(ofRandom(ofs_min, ofs_max))
 	, Amp(_Amp)
+	, Amp_min(_Amp/5)
 	{
 	}
 	
 	double get_SignedNoise(double t){
 		return Amp * ofSignedNoise(t * Freq_sec + ofs_sec);
 	}
+	double get_SignedNoise_Fade(double Fade, double t){
+		double _Amp = ofMap(Fade, 0, 1, Amp_min, Amp);
+		return _Amp * ofSignedNoise(t * Freq_sec + ofs_sec);
+	}
 	
 	double get_SignedNoise(double t, double param1){
 		return Amp * ofSignedNoise(t * Freq_sec + ofs_sec, param1);
+	}
+	double get_SignedNoise_Fade(double Fade, double t, double param1){
+		double _Amp = ofMap(Fade, 0, 1, Amp_min, Amp);
+		return _Amp * ofSignedNoise(t * Freq_sec + ofs_sec, param1);
 	}
 	
 	double get_Noise(double t){
 		return Amp * ofNoise(t * Freq_sec + ofs_sec);
 	}
+	double get_Noise_Fade(double Fade, double t){
+		double _Amp = ofMap(Fade, 0, 1, Amp_min, Amp);
+		return _Amp * ofNoise(t * Freq_sec + ofs_sec);
+	}
 	
-	double get_dNoise(double t, double param1){
+	double get_Noise(double t, double param1){
 		return Amp * ofNoise(t * Freq_sec + ofs_sec, param1);
+	}
+	double get_Noise_Fade(double Fade, double t, double param1){
+		double _Amp = ofMap(Fade, 0, 1, Amp_min, Amp);
+		return _Amp * ofNoise(t * Freq_sec + ofs_sec, param1);
 	}
 };
 
@@ -94,7 +113,7 @@ struct LED_LIGHT{
 	
 	LED_LIGHT(int _ODE_id, int _AddressFrom, enum LED_DEVICE_TYPE _LedDeviceType, COLOR_SURFACE _ColorSurface, bool _b_Simulate = false, ofPoint _pos = ofPoint(0, 0, 0), int _radius = 1)
 	: ODE_id(_ODE_id), AddressFrom(_AddressFrom), LedDeviceType(_LedDeviceType), ColorSurface(_ColorSurface), LedSimulation(_b_Simulate, _pos, _radius, &LedParam)
-	, Noise_Run_LevSync(50, 0.1, 2.0, 0, 1000), Noise_Run_ColSync(15, 0.3, 2.0, 0, 1000), Noise_Calm(14, 0.1, 1.5, 0, 1000)
+	, Noise_Run_LevSync(30, 0.5, 2.0, 0, 1000), Noise_Run_ColSync(15, 0.5, 2.0, 0, 1000), Noise_Calm(0, 0.5, 2.0, 0, 1000)
 	{
 	}
 };
