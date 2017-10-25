@@ -113,7 +113,7 @@ struct LED_LIGHT{
 	
 	LED_LIGHT(int _ODE_id, int _AddressFrom, enum LED_DEVICE_TYPE _LedDeviceType, COLOR_SURFACE _ColorSurface, bool _b_Simulate = false, ofPoint _pos = ofPoint(0, 0, 0), int _radius = 1)
 	: ODE_id(_ODE_id), AddressFrom(_AddressFrom), LedDeviceType(_LedDeviceType), ColorSurface(_ColorSurface), LedSimulation(_b_Simulate, _pos, _radius, &LedParam)
-	, Noise_Run_LevSync(30, 0.5, 2.0, 0, 1000), Noise_Run_ColSync(15, 0.5, 2.0, 0, 1000), Noise_Calm(0, 0.5, 2.0, 0, 1000)
+	, Noise_Run_LevSync(30, 0.5, 2.0, 0, 1000), Noise_Run_ColSync(20, 0.5, 2.0, 0, 1000), Noise_Calm(0, 0.5, 2.0, 0, 1000)
 	{
 	}
 };
