@@ -11,13 +11,19 @@
 enum{
 	MAX_LOGICAL_CHS = 30,
 };
+enum F_COLORBAR{
+	F_COLORBAR_SYNC,
+	F_COLORBAR_COL0,
+	F_COLORBAR_COL1,
+	F_COLORBAR_STROBE,
+};
 
 struct BLOCK{
 	/* */
 	vector<int> LogicalCh[MAX_LOGICAL_CHS];
 	
 	const BP_PATTERN_ID Bp_Pattern_id;
-	const bool b_ColorSync;
+	const F_COLORBAR f_ColorBar;
 	
 	int LogicalId[MAX_LOGICAL_CHS];
 	

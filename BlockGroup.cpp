@@ -77,7 +77,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	22, 23, 	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -105,7 +105,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 1,	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -127,7 +127,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 1, 22, 23, 	},
 				},			
 				BP_FLOW_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -149,7 +149,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	10, 11, 12, 13, 	},
 				},			
 				BP_FLOW_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -177,7 +177,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	22, 1, 	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -205,7 +205,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	23, 0, 	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -227,7 +227,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 22, 11, 13, 	},
 				},			
 				BP_FLOW_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -249,7 +249,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 23, 10, 12, 	},
 				},			
 				BP_FLOW_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -277,14 +277,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	22, 	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -312,14 +312,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -347,14 +347,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	23, 	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -382,14 +382,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 	},
 				},			
 				BP_FLOW_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -417,7 +417,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	22, 23, 	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -445,7 +445,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 1,	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -467,7 +467,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 1, 22, 23, 	},
 				},			
 				BP_SIN_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -489,7 +489,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	10, 11, 12, 13, 	},
 				},			
 				BP_SIN_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -517,7 +517,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	22, 1, 	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -545,7 +545,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	23, 0, 	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -567,7 +567,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 22, 11, 13, 	},
 				},			
 				BP_SIN_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -589,7 +589,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 23, 10, 12, 	},
 				},			
 				BP_SIN_6	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -617,14 +617,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	22, 	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -652,14 +652,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -687,14 +687,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	23, 	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -722,14 +722,14 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 	},
 				},			
 				BP_SIN_12	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// Block[0]				
 				{// LogicalCh[]			
 					{	0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 	},
 				},			
 				BP_ON_HIGH	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_COL0	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -746,7 +746,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 	},
 				},			
 				BP_STROBE_1	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -764,7 +764,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 3, 5, 7, 9, 11, 12, 14, 16, 18, 20, 22,	},
 				},			
 				BP_STROBE_2	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -782,7 +782,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 3, 5, 7, 8, 10, 12, 14, 17, 19, 21, 23, 	},
 				},			
 				BP_STROBE_2	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -800,7 +800,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 3, 5, 6, 8, 10, 13, 15, 17, 18, 20, 22, 	},
 				},			
 				BP_STROBE_2	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -818,7 +818,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 3, 4, 6, 9, 11, 12, 14, 17, 19, 20, 22, 	},
 				},			
 				BP_STROBE_2	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -836,7 +836,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	1, 2, 5, 6, 9, 10, 13, 14, 17, 18, 21, 22, 	},
 				},			
 				BP_STROBE_2	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -846,7 +846,7 @@ BLOCK_GROUP BlockGrouping[] = {
 		},					
 	},						
 	{	"CAM_STROBE_COLOR_SYNC"	,				
-		1	,	// weight			
+		0	,	// weight			
 		{ // Block					
 			{// Block[0]				
 				{// LogicalCh[]			
@@ -876,7 +876,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	23,	},
 				},			
 				BP_STROBE_24	,	// Bp_Pattern_id	
-				true	,	// b_ColorSync	
+				F_COLORBAR_SYNC	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			
@@ -916,7 +916,7 @@ BLOCK_GROUP BlockGrouping[] = {
 					{	23,	},
 				},			
 				BP_STROBE_24	,	// Bp_Pattern_id	
-				false	,	// b_ColorSync	
+				F_COLORBAR_STROBE	,	// f_ColorBar	
 			},				
 			{// period				
 				{// LogicalCh[]			

@@ -80,6 +80,22 @@ struct COLOR_COMBINATION_SET{
 	}
 };
 
+/**************************************************
+**************************************************/
+struct STROBE_COLOR_COMBINATION_SET{
+	int Weight;
+	LED_PARAM Color[NUM_COLOR_SURFACES];
+	
+	STROBE_COLOR_COMBINATION_SET( int _weight, const LED_PARAM Col_Restaurant, LED_PARAM Col_Entrance )
+	: Weight(_weight)
+	{
+		new(&Color[COLOR_FROM_RESTAURANT])	LED_PARAM(Col_Restaurant);
+		new(&Color[COLOR_FROM_ENTRANCE])	LED_PARAM(Col_Entrance);
+	}
+};
+
+/**************************************************
+**************************************************/
 class FADER{
 private:
 	double tan;
@@ -175,6 +191,11 @@ private:
 	int ColorCombination_id;
 	static int NUM_COLOR_COMBINATIONS;
 	int* Weight_ColorCombination_id;
+	
+	static STROBE_COLOR_COMBINATION_SET StrobeColorCombination[];
+	int StrobeColorCombination_id;
+	static int NUM_STROBE_COLOR_COMBINATIONS;
+	int* Weight_StrobeColorCombination_id;
 	
 	double LedNumSync;
 	

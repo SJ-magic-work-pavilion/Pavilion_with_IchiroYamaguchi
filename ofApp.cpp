@@ -128,7 +128,7 @@ void ofApp::setup(){
 	GG_VolRange.setup("Vol Range");
 	GG_VolRange.add(gui_Vol_thresh_L.setup("thresh L", 0.0325, 0.01, 0.5));
 	GG_VolRange.add(gui_Vol_thresh_H.setup("thresh H", 0.04, 0.01, 0.5));
-	GG_VolRange.add(gui_Vol_thresh_P_L.setup("thresh_P L", 0.07, 0.01, 0.5));
+	GG_VolRange.add(gui_Vol_thresh_P_L.setup("thresh_P L", 0.065, 0.01, 0.5));
 	GG_VolRange.add(gui_Vol_thresh_P_H.setup("thresh_P H", 0.12, 0.01, 0.5));
 	GG_VolRange.add(gui_Vol_Map_L.setup("Map L", 0.0325, 0, 0.5));
 	GG_VolRange.add(gui_Vol_Map_H.setup("Map H", 0.16, 0, 0.5));

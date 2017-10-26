@@ -107,6 +107,19 @@ COLOR_COMBINATION_SET DESIGN_MANAGER::ColorCombination[] = {
 };
 int DESIGN_MANAGER::NUM_COLOR_COMBINATIONS = sizeof(ColorCombination)/sizeof(ColorCombination[0]);
 
+
+/********************
+********************/
+STROBE_COLOR_COMBINATION_SET DESIGN_MANAGER::StrobeColorCombination[] = {
+	STROBE_COLOR_COMBINATION_SET( 4, LED_PARAM(255, 255, 255), LED_PARAM(255, 255, 255) ),	// white
+	STROBE_COLOR_COMBINATION_SET( 1, LED_PARAM(255, 0, 0), LED_PARAM(255, 0, 0) ),			// Red
+	STROBE_COLOR_COMBINATION_SET( 1, LED_PARAM(0, 0, 255), LED_PARAM(0, 0, 255) ),			// Blue
+	STROBE_COLOR_COMBINATION_SET( 1, LED_PARAM(255, 100, 0), LED_PARAM(255, 100, 0) ),		// orange
+	STROBE_COLOR_COMBINATION_SET( 1, LED_PARAM(140, 0, 255), LED_PARAM(140, 0, 255) ),		// purple
+};
+int DESIGN_MANAGER::NUM_STROBE_COLOR_COMBINATIONS = sizeof(StrobeColorCombination)/sizeof(StrobeColorCombination[0]);
+
+
 /******************************
 ******************************/
 int W_DesignCategory[] = {
@@ -126,6 +139,7 @@ func
 DESIGN_MANAGER::DESIGN_MANAGER()
 : LevSync(0)
 , ColorCombination_id(0)
+, StrobeColorCombination_id(0)
 , LedNumSync(0)
 , b_StateChart(true)
 , State(STATE_ESCAPE)
@@ -155,6 +169,13 @@ DESIGN_MANAGER::DESIGN_MANAGER()
 	
 	/********************
 	********************/
+	Weight_StrobeColorCombination_id = new int[NUM_STROBE_COLOR_COMBINATIONS];
+	for(int i = 0; i < NUM_STROBE_COLOR_COMBINATIONS; i++){
+		Weight_StrobeColorCombination_id[i] = StrobeColorCombination[i].Weight;
+	}
+	
+	/********************
+	********************/
 	Weight_BlockGrouping_id = new int[NUM_GROUPTYPES];
 	for(int i = 0; i < NUM_GROUPTYPES; i++){
 		Weight_BlockGrouping_id[i] = BlockGrouping[i].Weight;
@@ -177,6 +198,7 @@ DESIGN_MANAGER::~DESIGN_MANAGER()
 #endif
 	
 	delete [] Weight_BlockGrouping_id;
+	delete [] Weight_StrobeColorCombination_id;
 	delete [] Weight_ColorCombination_id;
 }
 
@@ -469,16 +491,27 @@ void DESIGN_MANAGER::update_DesignLight_Run_Echo__Pattern(double vol, double Vol
 			/********************
 			********************/
 			LED_PARAM Dynamic[NUM_COLOR_SURFACES];
-			
 			LED_PARAM Color_max;
-			if(BlockGrouping[BlockGrouping_id].Block[i].b_ColorSync)	Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_RESTAURANT ].maxColor;
-			else														Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_RESTAURANT ].Color_0;
-			Dynamic[COLOR_FROM_RESTAURANT] = Color_max * Lev * Fader_DesignLight.k;
-			
-			/* */
-			if(BlockGrouping[BlockGrouping_id].Block[i].b_ColorSync)	Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_ENTRANCE ].maxColor;
-			else														Color_max = ColorCombination[ColorCombination_id].Combination[ COLOR_FROM_ENTRANCE ].Color_0;
-			Dynamic[COLOR_FROM_ENTRANCE] = Color_max * Lev * Fader_DesignLight.k;
+			for(int surface = 0; surface < NUM_COLOR_SURFACES; surface++){
+				switch(BlockGrouping[BlockGrouping_id].Block[i].f_ColorBar){
+					case F_COLORBAR_SYNC:
+						Color_max = ColorCombination[ColorCombination_id].Combination[ surface ].maxColor;
+						break;
+					case F_COLORBAR_COL0:
+						Color_max = ColorCombination[ColorCombination_id].Combination[ surface ].Color_0;
+						break;
+					case F_COLORBAR_COL1:
+						Color_max = ColorCombination[ColorCombination_id].Combination[ surface ].Color_1;
+						break;
+					case F_COLORBAR_STROBE:
+						Color_max = StrobeColorCombination[StrobeColorCombination_id].Color[ surface ];
+						break;
+					default:
+						Color_max = ColorCombination[ColorCombination_id].Combination[ surface ].maxColor;
+						break;
+				}
+				Dynamic[surface] = Color_max * Lev * Fader_DesignLight.k;
+			}
 			
 			/********************
 			********************/
@@ -776,6 +809,7 @@ void DESIGN_MANAGER::Transition__to_WAIT()
 	for(int i = 0; i < NUM_COLOR_SURFACES; i++){
 		CalmColor_max[i] = ColorCombination[ColorCombination_id].Combination[i].Color_calm;
 	}
+	
 	Fader_DesignLight.set(2.0, true);
 	
 	/********************
@@ -872,6 +906,7 @@ void DESIGN_MANAGER::Dice_LedId_NumLeds_Sync()
 void DESIGN_MANAGER::Dice_ColorCombination()
 {
 	ColorCombination_id = Dice_index( Weight_ColorCombination_id, NUM_COLOR_COMBINATIONS );
+	StrobeColorCombination_id = Dice_index( Weight_StrobeColorCombination_id, NUM_STROBE_COLOR_COMBINATIONS );
 }
 
 /******************************
@@ -1026,6 +1061,16 @@ void DESIGN_MANAGER::draw_Infos()
 	sprintf(add_buf, "%-20s= %d (%s)\n", "ColorCombination_id", ColorCombination_id, ColorCombination[ColorCombination_id].Name.c_str());
 	strcat(buf, add_buf);
 	
+	sprintf(add_buf, "%-20s= (%4d,%4d,%4d)/(%4d,%4d,%4d)\n",	"Fix:StrobeColor", 
+																StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_RESTAURANT].get_R(),
+																StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_RESTAURANT].get_G(),
+																StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_RESTAURANT].get_B(),
+																StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_ENTRANCE].get_R(),
+																StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_ENTRANCE].get_G(),
+																StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_ENTRANCE].get_B() 
+																);
+	strcat(buf, add_buf);
+	
 	/********************
 	********************/
 	sprintf(add_buf, "%-20s= ", "LedExchange");
@@ -1082,6 +1127,7 @@ void DESIGN_MANAGER::draw_ColorInfos()
 	int space_y = 30;
 	int space_x = Bar_W/2;
 	int radius = 8;
+	int radius_Strobe = 6;
 	
 	/********************
 	********************/
@@ -1131,6 +1177,14 @@ void DESIGN_MANAGER::draw_ColorInfos()
 				255);
 	ofDrawCircle(ofs_x + space_x * 3, ofs_y + space_y * 3, radius);
 	
+	// strobe
+	ofSetColor(	StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_RESTAURANT].get_R(),
+				StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_RESTAURANT].get_G(),
+				StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_RESTAURANT].get_B(),
+				255);
+	// ofDrawCircle(ofs_x + space_x * 0, ofs_y + space_y * 2, radius_Strobe);
+	ofDrawRectangle(ofs_x + space_x * 0 - radius_Strobe, ofs_y + space_y * 2 - radius_Strobe, radius_Strobe * 2, radius_Strobe * 2);
+	
 	/********************
 	********************/
 	ofs_y += space_y * 3;
@@ -1172,6 +1226,14 @@ void DESIGN_MANAGER::draw_ColorInfos()
 				ColorCombination[ColorCombination_id].Combination[COLOR_FROM_ENTRANCE].Color_calm.get_B(),
 				255);
 	ofDrawCircle(ofs_x + space_x * 3, ofs_y + space_y * 3, radius);
+	
+	// strobe
+	ofSetColor(	StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_ENTRANCE].get_R(),
+				StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_ENTRANCE].get_G(),
+				StrobeColorCombination[StrobeColorCombination_id].Color[COLOR_FROM_ENTRANCE].get_B(),
+				255);
+	// ofDrawCircle(ofs_x + space_x * 0, ofs_y + space_y * 2, radius_Strobe);
+	ofDrawRectangle(ofs_x + space_x * 0 - radius_Strobe, ofs_y + space_y * 2 - radius_Strobe, radius_Strobe * 2, radius_Strobe * 2);
 }
 
 /******************************

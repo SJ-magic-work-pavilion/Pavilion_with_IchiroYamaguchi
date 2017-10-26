@@ -32,7 +32,7 @@ enum{
 	MARGIN = 1,
 };
 enum{
-	BUF_SIZE = 500,
+	BUF_SIZE = 2000,
 };
 enum COLOR_SURFACE{
 	COLOR_FROM_RESTAURANT,
